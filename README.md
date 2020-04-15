@@ -1,2 +1,2 @@
-# core-v-nvidia-isg
+# core-v-isg
 RISC-V Random Instruction Stream Generator
