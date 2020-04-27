@@ -284,14 +284,14 @@ class riscv_inst_base_txn extends uvm_sequence_item;
         (inst_type == OP_C_MV)          -> {rs2!=0;}
         (inst_type == OP_C_JR)          -> {rs1!=0;}
 
-        (inst_type == OP_C_ADDI4SPN)    -> {rd inside rvc_gprlist; imm[9:2] != 0;}
-        (inst_type == OP_C_LW)          -> {rs1 inside rvc_gprlist; rd inside rvc_gprlist;}
-        (inst_type == OP_C_LD)          -> {rs1 inside rvc_gprlist; rd inside rvc_gprlist;}
+        (inst_type == OP_C_ADDI4SPN)    -> {rd inside {rvc_gprlist}; imm[9:2] != 0;}
+        (inst_type == OP_C_LW)          -> {rs1 inside {rvc_gprlist}; rd inside {rvc_gprlist};}
+        (inst_type == OP_C_LD)          -> {rs1 inside {rvc_gprlist}; rd inside {rvc_gprlist};}
 
         // add extra rd constraint for OP_C_SW/OP_C_SD, it's useless for them, just for random flow support
         // otherwise when corresponding store is changed to load, previous randomized rd value (with store constraint) will be conflicted with new rd constraint (with load constraint)
-        (inst_type == OP_C_SW)          -> {rs1 inside rvc_gprlist; rs2 inside rvc_gprlist; rd inside rvc_gprlist;}
-        (inst_type == OP_C_SD)          -> {rs1 inside rvc_gprlist; rs2 inside rvc_gprlist; rd inside rvc_gprlist;}
+        (inst_type == OP_C_SW)          -> {rs1 inside {rvc_gprlist}; rs2 inside {rvc_gprlist}; rd inside {rvc_gprlist};}
+        (inst_type == OP_C_SD)          -> {rs1 inside {rvc_gprlist}; rs2 inside {rvc_gprlist}; rd inside {rvc_gprlist};}
         
         (inst_type == OP_C_ADDI)        -> {rd!=0; rd == rs1;}
         (inst_type == OP_C_ADDIW)       -> {rd!=0; rd == rs1;}
@@ -299,19 +299,19 @@ class riscv_inst_base_txn extends uvm_sequence_item;
         
         (inst_type == OP_C_LUI)         -> {imm[17:12] != 0; rd != 2;}
 
-        (inst_type == OP_C_SRLI)        -> {rs1 inside rvc_gprlist; rd == rs1; imm[5:0] != 0;}
-        (inst_type == OP_C_SRAI)        -> {rs1 inside rvc_gprlist; rd == rs1; imm[5:0] != 0;}
-        (inst_type == OP_C_ANDI)        -> {rs1 inside rvc_gprlist; rd == rs1;}
+        (inst_type == OP_C_SRLI)        -> {rs1 inside {rvc_gprlist}; rd == rs1; imm[5:0] != 0;}
+        (inst_type == OP_C_SRAI)        -> {rs1 inside {rvc_gprlist}; rd == rs1; imm[5:0] != 0;}
+        (inst_type == OP_C_ANDI)        -> {rs1 inside {rvc_gprlist}; rd == rs1;}
 
-        (inst_type == OP_C_SUB)         -> {rs1 inside rvc_gprlist; rs2 inside rvc_gprlist; rd == rs1;}
-        (inst_type == OP_C_XOR)         -> {rs1 inside rvc_gprlist; rs2 inside rvc_gprlist; rd == rs1;}
-        (inst_type == OP_C_OR)          -> {rs1 inside rvc_gprlist; rs2 inside rvc_gprlist; rd == rs1;}
-        (inst_type == OP_C_AND)         -> {rs1 inside rvc_gprlist; rs2 inside rvc_gprlist; rd == rs1;}
-        (inst_type == OP_C_SUBW)        -> {rs1 inside rvc_gprlist; rs2 inside rvc_gprlist; rd == rs1;}
-        (inst_type == OP_C_ADDW)        -> {rs1 inside rvc_gprlist; rs2 inside rvc_gprlist; rd == rs1;}
+        (inst_type == OP_C_SUB)         -> {rs1 inside {rvc_gprlist}; rs2 inside {rvc_gprlist}; rd == rs1;}
+        (inst_type == OP_C_XOR)         -> {rs1 inside {rvc_gprlist}; rs2 inside {rvc_gprlist}; rd == rs1;}
+        (inst_type == OP_C_OR)          -> {rs1 inside {rvc_gprlist}; rs2 inside {rvc_gprlist}; rd == rs1;}
+        (inst_type == OP_C_AND)         -> {rs1 inside {rvc_gprlist}; rs2 inside {rvc_gprlist}; rd == rs1;}
+        (inst_type == OP_C_SUBW)        -> {rs1 inside {rvc_gprlist}; rs2 inside {rvc_gprlist}; rd == rs1;}
+        (inst_type == OP_C_ADDW)        -> {rs1 inside {rvc_gprlist}; rs2 inside {rvc_gprlist}; rd == rs1;}
 
-        (inst_type == OP_C_BEQZ)        -> {rs1 inside rvc_gprlist;}
-        (inst_type == OP_C_BNEZ)        -> {rs1 inside rvc_gprlist;}
+        (inst_type == OP_C_BEQZ)        -> {rs1 inside {rvc_gprlist};}
+        (inst_type == OP_C_BNEZ)        -> {rs1 inside {rvc_gprlist};}
         
         (inst_type == OP_C_SLLI)        -> {rd == rs1; imm[5:0] != 0;}
         (inst_type == OP_C_LWSP)        -> {rd != 0;}

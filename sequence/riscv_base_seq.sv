@@ -17,6 +17,7 @@
 `ifndef RISCV_BASE_SEQ__SV
 `define RISCV_BASE_SEQ__SV
 
+import uvm_pkg::*;
 import riscv_txn_pkg::*;
 import riscv_memory_pkg::*;
 `include "riscv_params.sv"
@@ -733,7 +734,7 @@ virtual task init_random_pmp_cfg();
         end
         pmpcfg_cfg_txn.s = $urandom;  
         pmpcfg_cfg_txn.l = (($urandom%2)==0)  ? 0 : 1;
-        pmpcfg_cfg_txn.pack_cfg();
+        void'(pmpcfg_cfg_txn.pack_cfg());
         pmpaddr_cfg_txn.min_addr = (m_tvec_region.pa_range[i].min_addr<m_tvec_region.va_range[i].min_addr? m_tvec_region.pa_range[i].min_addr: m_tvec_region.va_range[i].min_addr);
         pmpaddr_cfg_txn.max_addr = (m_tvec_region.pa_range[i].max_addr>m_tvec_region.va_range[i].max_addr? m_tvec_region.pa_range[i].max_addr: m_tvec_region.va_range[i].max_addr);
         pmpaddr_cfg_txn.cal_addr(pmpcfg_cfg_txn.a);
@@ -744,7 +745,7 @@ virtual task init_random_pmp_cfg();
             pmpaddr_cfg_txn_1 = new();
             pmpcfg_cfg_txn_1  = new();
             pmpcfg_cfg_txn_1.a = 0;
-            pmpcfg_cfg_txn_1.pack_cfg();
+            void'(pmpcfg_cfg_txn_1.pack_cfg());
             pmpaddr_cfg_txn_1.paddr = (pmpaddr_cfg_txn.min_addr>>2);
             m_init_pmpaddr_cfg[idx-1] = pmpaddr_cfg_txn_1;
             m_init_pmpcfg_cfg[idx-1]  = pmpcfg_cfg_txn_1;
@@ -765,7 +766,7 @@ virtual task init_random_pmp_cfg();
     pmpcfg_cfg_txn.a = (($urandom%5)==0) ? `PMP_TOR : `PMP_NAPOT;
     pmpcfg_cfg_txn.s = $urandom;  
     pmpcfg_cfg_txn.l = (($urandom%2)==0)  ? 0 : 1;
-    pmpcfg_cfg_txn.pack_cfg();
+    void'(pmpcfg_cfg_txn.pack_cfg());
     pmpaddr_cfg_txn.min_addr = m_init_smode_trap_vector;
     pmpaddr_cfg_txn.max_addr = m_init_smode_trap_vector + 'h1000;
     pmpaddr_cfg_txn.cal_addr(pmpcfg_cfg_txn.a);
@@ -776,7 +777,7 @@ virtual task init_random_pmp_cfg();
         pmpaddr_cfg_txn_1 = new();
         pmpcfg_cfg_txn_1  = new();
         pmpcfg_cfg_txn_1.a = 0;
-        pmpcfg_cfg_txn_1.pack_cfg();
+        void'(pmpcfg_cfg_txn_1.pack_cfg());
         pmpaddr_cfg_txn_1.paddr = (pmpaddr_cfg_txn.min_addr>>2);
         m_init_pmpaddr_cfg[idx-1] = pmpaddr_cfg_txn_1;
         m_init_pmpcfg_cfg[idx-1]  = pmpcfg_cfg_txn_1;
@@ -798,7 +799,7 @@ virtual task init_random_pmp_cfg();
         pmpcfg_cfg_txn.a = (($urandom%5)==0) ? `PMP_TOR : `PMP_NAPOT;
         pmpcfg_cfg_txn.s = $urandom;  
         pmpcfg_cfg_txn.l = (($urandom%2)==0)  ? 0 : 1;
-        pmpcfg_cfg_txn.pack_cfg();
+        void'(pmpcfg_cfg_txn.pack_cfg());
         pmpaddr_cfg_txn.min_addr = (m_bkdr_data_region.pa_range[i].min_addr<m_bkdr_data_region.va_range[i].min_addr?m_bkdr_data_region.pa_range[i].min_addr:m_bkdr_data_region.va_range[i].min_addr);
         pmpaddr_cfg_txn.max_addr = (m_bkdr_data_region.pa_range[i].max_addr>m_bkdr_data_region.va_range[i].max_addr?m_bkdr_data_region.pa_range[i].max_addr:m_bkdr_data_region.va_range[i].max_addr);
         pmpaddr_cfg_txn.cal_addr(pmpcfg_cfg_txn.a);
@@ -809,7 +810,7 @@ virtual task init_random_pmp_cfg();
             pmpaddr_cfg_txn_1 = new();
             pmpcfg_cfg_txn_1  = new();
             pmpcfg_cfg_txn_1.a = 0;
-            pmpcfg_cfg_txn_1.pack_cfg();
+            void'(pmpcfg_cfg_txn_1.pack_cfg());
             pmpaddr_cfg_txn_1.paddr = (pmpaddr_cfg_txn.min_addr>>2);
             m_init_pmpaddr_cfg[idx-1] = pmpaddr_cfg_txn_1;
             m_init_pmpcfg_cfg[idx-1]  = pmpcfg_cfg_txn_1;
@@ -832,7 +833,7 @@ virtual task init_random_pmp_cfg();
         pmpcfg_cfg_txn.a = (($urandom%5)==0) ? `PMP_TOR : `PMP_NAPOT;
         pmpcfg_cfg_txn.s = $urandom;  
         pmpcfg_cfg_txn.l = (($urandom%2)==0)  ? 0 : 1;
-        pmpcfg_cfg_txn.pack_cfg();
+        void'(pmpcfg_cfg_txn.pack_cfg());
         pmpaddr_cfg_txn.min_addr = (m_stack_region.pa_range[i].min_addr<m_stack_region.va_range[i].min_addr?m_stack_region.pa_range[i].min_addr:m_stack_region.va_range[i].min_addr);
         pmpaddr_cfg_txn.max_addr = (m_stack_region.pa_range[i].max_addr>m_stack_region.va_range[i].max_addr?m_stack_region.pa_range[i].max_addr:m_stack_region.va_range[i].max_addr);
         pmpaddr_cfg_txn.cal_addr(pmpcfg_cfg_txn.a);
@@ -843,7 +844,7 @@ virtual task init_random_pmp_cfg();
             pmpaddr_cfg_txn_1 = new();
             pmpcfg_cfg_txn_1  = new();
             pmpcfg_cfg_txn_1.a = 0;
-            pmpcfg_cfg_txn_1.pack_cfg();
+            void'(pmpcfg_cfg_txn_1.pack_cfg());
             pmpaddr_cfg_txn_1.paddr = (pmpaddr_cfg_txn.min_addr>>2);
             m_init_pmpaddr_cfg[idx-1] = pmpaddr_cfg_txn_1;
             m_init_pmpcfg_cfg[idx-1]  = pmpcfg_cfg_txn_1;
@@ -868,7 +869,7 @@ virtual task init_random_pmp_cfg();
         pmpcfg_cfg_txn.a = (($urandom%5)==0) ? `PMP_TOR : `PMP_NAPOT;
         pmpcfg_cfg_txn.s = $urandom;  
         pmpcfg_cfg_txn.l = (($urandom%2)==0)  ? 0 : 1;
-        pmpcfg_cfg_txn.pack_cfg();
+        void'(pmpcfg_cfg_txn.pack_cfg());
         pmpaddr_cfg_txn.min_addr = (m_bvec_region.pa_range[i].min_addr<m_bvec_region.va_range[i].min_addr?m_bvec_region.pa_range[i].min_addr:m_bvec_region.va_range[i].min_addr);
         pmpaddr_cfg_txn.max_addr = (m_bvec_region.pa_range[i].max_addr>m_bvec_region.va_range[i].max_addr?m_bvec_region.pa_range[i].max_addr:m_bvec_region.va_range[i].max_addr);
         pmpaddr_cfg_txn.cal_addr(pmpcfg_cfg_txn.a);
@@ -879,7 +880,7 @@ virtual task init_random_pmp_cfg();
             pmpaddr_cfg_txn_1 = new();
             pmpcfg_cfg_txn_1  = new();
             pmpcfg_cfg_txn_1.a = 0;
-            pmpcfg_cfg_txn_1.pack_cfg();
+            void'(pmpcfg_cfg_txn_1.pack_cfg());
             pmpaddr_cfg_txn_1.paddr = (pmpaddr_cfg_txn.min_addr>>2);
             m_init_pmpaddr_cfg[idx-1] = pmpaddr_cfg_txn_1;
             m_init_pmpcfg_cfg[idx-1]  = pmpcfg_cfg_txn_1;
@@ -903,7 +904,7 @@ virtual task init_random_pmp_cfg();
         pmpcfg_cfg_txn.a = (($urandom%5)==0) ? `PMP_TOR : `PMP_NAPOT;
         pmpcfg_cfg_txn.s = $urandom;  
         pmpcfg_cfg_txn.l = (($urandom%2)==0)  ? 0 : 1;
-        pmpcfg_cfg_txn.pack_cfg();
+        void'(pmpcfg_cfg_txn.pack_cfg());
         pmpaddr_cfg_txn.min_addr = (m_code_region.pa_range[i].min_addr<m_code_region.va_range[i].min_addr?m_code_region.pa_range[i].min_addr:m_code_region.va_range[i].min_addr);
         pmpaddr_cfg_txn.max_addr = (m_code_region.pa_range[i].max_addr>m_code_region.va_range[i].max_addr?m_code_region.pa_range[i].max_addr:m_code_region.va_range[i].max_addr);
         pmpaddr_cfg_txn.cal_addr(pmpcfg_cfg_txn.a);
@@ -914,7 +915,7 @@ virtual task init_random_pmp_cfg();
             pmpaddr_cfg_txn_1 = new();
             pmpcfg_cfg_txn_1  = new();
             pmpcfg_cfg_txn_1.a = 0;
-            pmpcfg_cfg_txn_1.pack_cfg();
+            void'(pmpcfg_cfg_txn_1.pack_cfg());
             pmpaddr_cfg_txn_1.paddr = (pmpaddr_cfg_txn.min_addr>>2);
             m_init_pmpaddr_cfg[idx-1] = pmpaddr_cfg_txn_1;
             m_init_pmpcfg_cfg[idx-1]  = pmpcfg_cfg_txn_1;
@@ -969,7 +970,7 @@ virtual task init_random_pmp_cfg();
             pmpcfg_cfg_txn.a = (($urandom%5)==0) ? `PMP_TOR : `PMP_NAPOT;
             pmpcfg_cfg_txn.s = $urandom;
             pmpcfg_cfg_txn.l = $urandom;
-            pmpcfg_cfg_txn.pack_cfg();
+            void'(pmpcfg_cfg_txn.pack_cfg());
             idx = get_pmp_id(pmpcfg_cfg_txn);
             pmpaddr_cfg_txn.min_addr = (m_data_region.pa_range[i].min_addr<m_data_region.va_range[i].min_addr?m_data_region.pa_range[i].min_addr:m_data_region.va_range[i].min_addr);
             pmpaddr_cfg_txn.max_addr = (m_data_region.pa_range[i].max_addr>m_data_region.va_range[i].max_addr?m_data_region.pa_range[i].max_addr:m_data_region.va_range[i].max_addr);
@@ -978,7 +979,7 @@ virtual task init_random_pmp_cfg();
                 pmpaddr_cfg_txn_1 = new();
                 pmpcfg_cfg_txn_1  = new();
                 pmpcfg_cfg_txn_1.a = 0;
-                pmpcfg_cfg_txn_1.pack_cfg();
+                void'(pmpcfg_cfg_txn_1.pack_cfg());
                 pmpaddr_cfg_txn_1.paddr = (pmpaddr_cfg_txn.min_addr>>2);
                 m_init_pmpaddr_cfg[idx-1] = pmpaddr_cfg_txn_1;
                 m_init_pmpcfg_cfg[idx-1]  = pmpcfg_cfg_txn_1;
@@ -993,19 +994,19 @@ virtual task init_random_pmp_cfg();
             pmpaddr_cfg_txn = new();
             pmpcfg_cfg_txn = new();
 
-            pmpcfg_cfg_txn.randomize() with {
+            void'(pmpcfg_cfg_txn.randomize() with {
             // to make pmp violation not too frequent
-			r dist {0:/1, 1:/2};
+            r dist {0:/1, 1:/2};
             w dist {0:/1, 1:/2};
             x dist {0:/1, 1:/2};
             a dist {0:/1, `PMP_NAPOT:/4, `PMP_NA4:/2, `PMP_TOR:/4};
             s dist {0:/1, 1:/2};
             l dist {0:/1, 1:/2};
-            };
+            });
             idx = get_pmp_id(pmpcfg_cfg_txn); 
-            pmpcfg_cfg_txn.pack_cfg();
+            void'(pmpcfg_cfg_txn.pack_cfg());
 
-            pmpaddr_cfg_txn.randomize() with { 
+            void'(pmpaddr_cfg_txn.randomize() with { 
                //foreach (rsvd_region_queue[j]) {
                //     (pmpcfg_cfg_txn.a !=0) -> !(min_addr inside {[rsvd_region_queue[j].pa_range[0].min_addr:rsvd_region_queue[j].pa_range[0].max_addr]});
                //     (pmpcfg_cfg_txn.a !=0) -> !(max_addr inside {[rsvd_region_queue[j].pa_range[0].min_addr:rsvd_region_queue[j].pa_range[0].max_addr]});
@@ -1029,13 +1030,13 @@ virtual task init_random_pmp_cfg();
                 };
                 max_addr >= min_addr;
                 solve min_addr before max_addr;
-            };
+            });
             pmpaddr_cfg_txn.cal_addr(pmpcfg_cfg_txn.a);
             if(pmpcfg_cfg_txn.a == `PMP_TOR) begin
                 pmpaddr_cfg_txn_1 = new();
                 pmpcfg_cfg_txn_1  = new();
                 pmpcfg_cfg_txn_1.a = 0;
-                pmpcfg_cfg_txn_1.pack_cfg();
+                void'(pmpcfg_cfg_txn_1.pack_cfg());
                 pmpaddr_cfg_txn_1.paddr = (pmpaddr_cfg_txn.min_addr>>2);
                 m_init_pmpaddr_cfg[idx-1] = pmpaddr_cfg_txn_1;
                 m_init_pmpcfg_cfg[idx-1]  = pmpcfg_cfg_txn_1;
@@ -1053,7 +1054,7 @@ endtask
 // generate initial gpr value
 virtual task gen_init_gpr();
     c_gpr = new();
-	c_gpr.randomize();
+	void'(c_gpr.randomize());
 	for (int i=0; i<31; i++) begin
 		`uvm_info("INIT_GPR_DUMP", $psprintf("Initial randomized gpr[%0d] = 0x%0x\n", i+1, c_gpr.gpr[i]), UVM_HIGH);
 	end
@@ -2073,7 +2074,7 @@ virtual function riscv_inst_base_txn gen_inst(bit[63:0] pc, bit gen_inst_32_en, 
 
     tr = riscv_inst_base_txn::type_id::create("tr",,get_full_name());
 
-    tr.randomize();
+    void'(tr.randomize());
     tr.pc = pc;
 
 	gen_fail = 0;
@@ -2383,55 +2384,55 @@ function bit[63:0] riscv_base_seq::gen_fp_data(int sign=-1, int expo=-1, longint
 
   sign = sign == -1 ? $urandom %2 : sign[0]; 
 
-  std::randomize(rnd) with { rnd dist {0:/10, 1:/20, 2:/40, 3:/10, 4:/15, 5:/10};};
+  void'(std::randomize(rnd) with { rnd dist {0:/10, 1:/20, 2:/40, 3:/10, 4:/15, 5:/10};});
   if (rnd == 0)begin//0
     expo_p = 0;
     frac_p = 0;
   end else if(rnd == 1)begin//subnormal
     expo_p = 0;
-    std::randomize(frac_p) with { frac_p dist { 1 :/ 30,
+    void'(std::randomize(frac_p) with { frac_p dist { 1 :/ 30,
                                                [2 : 2** frac_bits *1/10 -1] :/ 20,
                                                [2** frac_bits *1/10 : 2** frac_bits *5/10 -1] :/ 20,
                                                [2** frac_bits *5/10 : 2** frac_bits *9/10 -1] :/ 20,
                                                [2** frac_bits *9/10 : 2** frac_bits -2] :/ 20,
-                                               (2** frac_bits -1) :/10};};
+                                               (2** frac_bits -1) :/10};});
   end else if(rnd == 2)begin//normal
-    std::randomize(expo_p) with { expo_p dist { 1 :/ 30, 
+    void'(std::randomize(expo_p) with { expo_p dist { 1 :/ 30, 
                                                [157 : 160] :/ 5, // 32-bit int
                                                [189 : 192] :/ 5, // 64-bit int
                                                [2 : 2** expo_bits *1/10 -1] :/ 20,
                                                [2** expo_bits *1/10 : 2** expo_bits *5/10 -1] :/ 20,
                                                [2** expo_bits *5/10 : 2** expo_bits *9/10 -1] :/ 20,
                                                [2** expo_bits *9/10 : 2** expo_bits -3] :/ 20,
-                                               (2** expo_bits -2) :/10};};
-    std::randomize(frac_p) with { frac_p dist { 0 :/ 30,
+                                               (2** expo_bits -2) :/10};});
+    void'(std::randomize(frac_p) with { frac_p dist { 0 :/ 30,
                                                [1 : 2** frac_bits *1/10 -1] :/ 20,
                                                [2** frac_bits *1/10 : 2** frac_bits *5/10 -1] :/ 20,
                                                [2** frac_bits *5/10 : 2** frac_bits *9/10 -1] :/ 20,
                                                [2** frac_bits *9/10 : 2** frac_bits -2] :/ 20,
-                                               (2** frac_bits -1) :/10};};
+                                               (2** frac_bits -1) :/10};});
   end else if(rnd == 3)begin//infinite
     expo_p = 2** expo_bits -1;
     frac_p = 0;
   end else if(rnd == 4)begin//SNaN
     expo_p = 2** expo_bits -1;
     frac_bits -=1;
-    std::randomize(frac_p) with { frac_p dist { 1 :/ 20,
+    void'(std::randomize(frac_p) with { frac_p dist { 1 :/ 20,
                                                [2 : 2** frac_bits *1/10 -1] :/ 20,
                                                [2** frac_bits *1/10 : 2** frac_bits *5/10 -1] :/ 20,
                                                [2** frac_bits *5/10 : 2** frac_bits *9/10 -1] :/ 20,
                                                [2** frac_bits *9/10 : 2** frac_bits -2] :/ 20,
-                                               (2** frac_bits -1) :/20};};
+                                               (2** frac_bits -1) :/20};});
     frac_bits +=1;
   end else begin//QNaN
     expo_p = 2** expo_bits -1;
     frac_bits -=1;
-    std::randomize(frac_p) with { frac_p dist { 0 :/ 30,
+    void'(std::randomize(frac_p) with { frac_p dist { 0 :/ 30,
                                                [1 : 2** frac_bits *1/10 -1] :/ 20,
                                                [2** frac_bits *1/10 : 2** frac_bits *5/10 -1] :/ 20,
                                                [2** frac_bits *5/10 : 2** frac_bits *9/10 -1] :/ 20,
                                                [2** frac_bits *9/10 : 2** frac_bits -2] :/ 20,
-                                               (2** frac_bits -1) :/10};};
+                                               (2** frac_bits -1) :/10};});
 
     frac_p += 1<< frac_bits;
     frac_bits +=1;
@@ -2454,8 +2455,8 @@ function bit[63:0] riscv_base_seq::fp_data_delta(bit[63:0] fp_data_i);
   int expo_bits=8;//single float
   int frac_bits=23;
 
-  std::randomize(rnd2);
-  std::randomize(rnd) with { rnd dist {0:/10, 1:/10, 2:/10, 3:/10, 4:/30, 5:/30};};
+  void'(std::randomize(rnd2));
+  void'(std::randomize(rnd) with { rnd dist {0:/10, 1:/10, 2:/10, 3:/10, 4:/30, 5:/30};});
 
     sign = 0;
     expo = 0;
@@ -3221,7 +3222,7 @@ endfunction
 
 // store instruction bin code into memory
 function void riscv_base_seq::store_inst_code(riscv_inst_base_txn tr);
-    tr.gen_inst_bin_code();
+    void'(tr.gen_inst_bin_code());
 
     for (int j=0; j<tr.pc_pa.size(); j++) begin
         for (int i=0; i<tr.inst_bin_code_size; i++) begin
@@ -3316,13 +3317,13 @@ function bit[63:0] riscv_base_seq::insert_random_inst_in_isr(bit[63:0] pc, bit i
         end
     end
 
-    txn.randomize() with {
+    void'(txn.randomize() with {
         inst_type dist {['h0:'h1d]:/1, ['h30:'h3c]:/1, 'h20:/1, ['h22:'h27]:/1, ['h40:'h4a]:/1, ['h50:'h55]:/1, 'h60:/1, 'h61:/1, 'h67:/sfence_weight};
         inst_type != 'h71;
         inst_type != 'h111;
         inst_type != 'h112;
         rd == 0;
-    };
+    });
 
     if (txn.inst_type >= 'h20 && txn.inst_type <= 'h27) begin
         if (is_exit_trap == 1) begin
@@ -3473,7 +3474,7 @@ function bit[31:0] riscv_base_seq::get_pmp_id(ref pmpcfg_cfg pmp_cfg);
                     pmpcfg_cfg_txn.s=0;
                     pmpcfg_cfg_txn.a=0;
                     pmpcfg_cfg_txn.l=0;
-                    pmpcfg_cfg_txn.pack_cfg();
+                    void'(pmpcfg_cfg_txn.pack_cfg());
                     m_init_pmpcfg_cfg[idx_queue[i]-1]  = pmpcfg_cfg_txn;
 
                     break;
@@ -3499,16 +3500,16 @@ function void riscv_base_seq::set_pmp_region(bit[63:0] region_start, bit[63:0] r
     pmpaddr_cfg_txn_1= new();
     pmpcfg_cfg_txn  = new();
 
-    pmpcfg_cfg_txn.randomize() with{
+    void'(pmpcfg_cfg_txn.randomize() with{
         r == 1;
         w == 1;
         x == 1;
         a inside {`PMP_TOR, `PMP_NAPOT};
         s inside {[0:3]};
         l inside {0, 1};
-    };
+    });
     idx = get_pmp_id(pmpcfg_cfg_txn);
-    pmpcfg_cfg_txn.pack_cfg();
+    void'(pmpcfg_cfg_txn.pack_cfg());
 
     pmpaddr_cfg_txn.min_addr = region_start ;
     pmpaddr_cfg_txn.max_addr = region_end   ;
@@ -3605,11 +3606,11 @@ endfunction
 function void riscv_base_seq::gen_fpr_queue(int cnt);
 	randc32 fpr_idx;
 	
-    std::randomize(rnd) with { rnd dist {1:/5, [2:4]:/40, 5:/10, [6:10]:/5, [11:21]:/5, [22:31]:/30, 32:/5};};
+    void'(std::randomize(rnd) with { rnd dist {1:/5, [2:4]:/40, 5:/10, [6:10]:/5, [11:21]:/5, [22:31]:/30, 32:/5};});
     if(cnt != -1) rnd = cnt;
 	fpr_queue = new[rnd];
 
-    std::randomize(fpr_queue) with { unique {fpr_queue};};
+    void'(std::randomize(fpr_queue) with { unique {fpr_queue};});
 	
     for(int i=0; i<rnd; i++)begin
 		`uvm_info("debug", $psprintf("fpr_queue[%0d] = %0d", i, fpr_queue[i]), UVM_NONE);
@@ -4684,13 +4685,13 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
                 tr.inst_type = (($urandom%2)==0) ? OP_LB : OP_LBU;
 		    end
 
-		    tr.randomize(imm_64) with {
+		    void'(tr.randomize(imm_64) with {
 		    	imm_64 dist {0:/1, [1:5]:/3, [6:'h7ff]:/15, ['hffff_ffff_ffff_f800:'hffff_ffff_ffff_fff9]:/15, ['hffff_ffff_ffff_fffa:'hffff_ffff_ffff_fffe]:/3, 'hffff_ffff_ffff_ffff:/1};
                 if (found_valid_base == 1) {
 		    	    base + signed'(imm_64) >= min_addr;
 		    	    base + signed'(imm_64) <= max_addr;
                 }
-		    };
+		    });
             
             tr.imm = tr.imm_64[31:0];
 	        tr.target = base + signed'(tr.imm_64);
@@ -4704,7 +4705,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
                 tr.inst_type = (($urandom%2)==0) ? OP_LH : OP_LHU;
 		    end
 
-		    tr.randomize(imm_64) with {
+		    void'(tr.randomize(imm_64) with {
 		    	imm_64 dist {0:/1, [1:5]:/3, [6:'h7ff]:/15, ['hffff_ffff_ffff_f800:'hffff_ffff_ffff_fff9]:/15, ['hffff_ffff_ffff_fffa:'hffff_ffff_ffff_fffe]:/3, 'hffff_ffff_ffff_ffff:/1};
                 if (found_valid_base == 1) {
 		    	    base + signed'(imm_64) >= min_addr;
@@ -4716,7 +4717,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
                 else {
 		    	    ((base + signed'(imm_64)) % 2 == 0) dist {0:/1, 1:/10};
                 }
-		    };
+		    });
             
             tr.imm = tr.imm_64[31:0];
 	        tr.target = base + signed'(tr.imm_64);
@@ -4738,7 +4739,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
                 end
 		    end
 
-		    tr.randomize(imm_64) with {
+		    void'(tr.randomize(imm_64) with {
 		    	imm_64 dist {0:/1, [1:5]:/3, [6:'h7ff]:/15, ['hffff_ffff_ffff_f800:'hffff_ffff_ffff_fff9]:/15, ['hffff_ffff_ffff_fffa:'hffff_ffff_ffff_fffe]:/3, 'hffff_ffff_ffff_ffff:/1};
                 if (found_valid_base == 1) {
 		    	    base + signed'(imm_64) >= min_addr;
@@ -4750,7 +4751,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
                 else {
 		    	    ((base + signed'(imm_64)) % 4 == 0) dist {0:/1, 1:/10};
                 }
-		    };
+		    });
             
             tr.imm = tr.imm_64[31:0];
 	        tr.target = base + signed'(tr.imm_64);
@@ -4764,7 +4765,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
                 tr.inst_type = OP_LD;
 		    end
 
-		    tr.randomize(imm_64) with {
+		    void'(tr.randomize(imm_64) with {
 		    	imm_64 dist {0:/1, [1:5]:/3, [6:'h7ff]:/15, ['hffff_ffff_ffff_f800:'hffff_ffff_ffff_fff9]:/15, ['hffff_ffff_ffff_fffa:'hffff_ffff_ffff_fffe]:/3, 'hffff_ffff_ffff_ffff:/1};
                 if (found_valid_base == 1) {
 		    	    base + signed'(imm_64) >= min_addr;
@@ -4776,7 +4777,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
                 else {
 		    	    ((base + signed'(imm_64)) % 8 == 0) dist {0:/1, 1:/10};
                 }
-		    };
+		    });
             
             tr.imm = tr.imm_64[31:0];
 	        tr.target = base + signed'(tr.imm_64);
@@ -4798,7 +4799,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
                 end
 		    end
 
-		    tr.randomize(imm) with {
+		    void'(tr.randomize(imm) with {
                 imm[1:0] == 0;
                 if (tr.inst_type == OP_C_LWSP || tr.inst_type == OP_C_SWSP) {
 		    	    imm[7:2] dist {0:=1, [1:'h3e]:=1, 'h3f:=1};
@@ -4813,7 +4814,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
 		    	    base + imm >= min_addr;
 		    	    base + imm <= max_addr;
                 }
-		    };
+		    });
             
             tr.target = base + tr.imm;
             loop_cnt++;
@@ -4834,7 +4835,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
                 end
 		    end
 
-		    tr.randomize(imm) with {
+		    void'(tr.randomize(imm) with {
                 imm[2:0] == 0;
                 if (tr.inst_type == OP_C_LDSP || tr.inst_type == OP_C_SDSP) {
 		    	    imm[8:3] dist {0:=1, [1:'h3e]:=1, 'h3f:=1};
@@ -4849,7 +4850,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
 		    	    base + imm >= min_addr;
 		    	    base + imm <= max_addr;
                 }
-		    };
+		    });
             
             tr.target = base + tr.imm;
             loop_cnt++;
@@ -5228,16 +5229,16 @@ function bit[31:0] riscv_base_seq::gen_isr_inst_code_with_pc(inst_type_e inst_ty
     bit [ 2:0] rm;
     bit [ 4:0] rs3;
 
-	tr = riscv_inst_base_txn::type_id::create("tr",,get_full_name());
-    std::randomize(rm) with { rm dist {0:/ 10, [1:4]:/ 40};};
-    std::randomize(rs3) with {rs3 inside fpr_queue;};
+	  tr = riscv_inst_base_txn::type_id::create("tr",,get_full_name());
+    void'(std::randomize(rm) with { rm dist {0:/ 10, [1:4]:/ 40};});
+    void'(std::randomize(rs3) with {rs3 inside {fpr_queue};});
     tr.inst_type = inst_type;
-	tr.rm = rm;
-	tr.rd = rd;
-	tr.rs1 = rs1;
-	tr.rs2 = rs2;
-	tr.rs3 = rs3;
-	tr.imm = imm;
+	  tr.rm = rm;
+	  tr.rd = rd;
+	  tr.rs1 = rs1;
+	  tr.rs2 = rs2;
+	  tr.rs3 = rs3;
+	  tr.imm = imm;
     if (tr.inst_type == OP_FENCE) begin
         tr.pred = imm[7:4];
         tr.succ = imm[3:0];
@@ -5245,7 +5246,7 @@ function bit[31:0] riscv_base_seq::gen_isr_inst_code_with_pc(inst_type_e inst_ty
     else if (tr.inst_type == OP_CSRRW || tr.inst_type == OP_CSRRS || tr.inst_type == OP_CSRRC || tr.inst_type == OP_CSRRWI || tr.inst_type == OP_CSRRSI || tr.inst_type == OP_CSRRCI) begin
         tr.csr = imm[16:5];
     end
-	tr.gen_inst_bin_code();
+	  void'(tr.gen_inst_bin_code());
     
     // extra function than generating instruction code
     // put these code in gen_isr_inst_code_with_pc() because it's only called by store_isr_inst_code()
@@ -5400,8 +5401,8 @@ task riscv_base_seq::create_op(inst_type_e inst_type, bit[4:0] rd, bit[4:0] rs1,
 
 	tr = riscv_inst_base_txn::type_id::create("tr",,get_full_name());
 	start_item(tr);
-    std::randomize(rm) with { rm dist {0:/ 20, [1:4]:/ 80, [5:6]:/ 2, 7:/ 3};};
-    if(rs3 == -1)begin std::randomize(rs3) with {rs3 inside fpr_queue;}; end
+    void'(std::randomize(rm) with { rm dist {0:/ 20, [1:4]:/ 80, [5:6]:/ 2, 7:/ 3};});
+    if(rs3 == -1)begin void'(std::randomize(rs3) with {rs3 inside {fpr_queue};}); end
 	tr.rm        = rm;
 	tr.rd        = rd;
 	tr.rs1       = rs1;
@@ -5417,7 +5418,7 @@ task riscv_base_seq::create_op(inst_type_e inst_type, bit[4:0] rd, bit[4:0] rs1,
     else if (tr.inst_type == OP_CSRRW || tr.inst_type == OP_CSRRS || tr.inst_type == OP_CSRRC || tr.inst_type == OP_CSRRWI || tr.inst_type == OP_CSRRSI || tr.inst_type == OP_CSRRCI) begin
         tr.csr = imm[16:5];
     end
-	tr.gen_inst_bin_code();
+	void'(tr.gen_inst_bin_code());
 	tr.pc = m_curr_pc;
 	tr.is_key_inst = is_key_inst;
     
@@ -5450,8 +5451,8 @@ task riscv_base_seq::create_op_with_pc(inst_type_e inst_type, bit[4:0] rd, bit[4
 
 	tr = riscv_inst_base_txn::type_id::create("tr",,get_full_name());
 	start_item(tr);
-    std::randomize(rm) with { rm dist {0:/ 20, [1:4]:/ 60, [5:6]:/ 3, 7:/ 20};};
-    if(rs3 == -1)begin std::randomize(rs3) with {rs3 inside fpr_queue;}; end
+    void'(std::randomize(rm) with { rm dist {0:/ 20, [1:4]:/ 60, [5:6]:/ 3, 7:/ 20};});
+    if(rs3 == -1)begin void'(std::randomize(rs3) with {rs3 inside {fpr_queue};}); end
 	tr.rm = rm;
     tr.inst_type = inst_type;
 	tr.rd = rd;
@@ -5460,7 +5461,7 @@ task riscv_base_seq::create_op_with_pc(inst_type_e inst_type, bit[4:0] rd, bit[4
 	tr.rs3 = rs3;
 	tr.imm = imm;
 	tr.pc = pc;
-	tr.gen_inst_bin_code();
+	void'(tr.gen_inst_bin_code());
     
 	for (int i=0; i<tr.inst_bin_code_size; i++) begin
     	pa[64*i+:64] = va2pa(tr.pc+i, 1);
@@ -5557,8 +5558,8 @@ task riscv_base_seq::init_fpr(int cnt);
     //init fpr
     wdata = gen_fp_data();
     for (int i=0; i<32; i++) begin
-      if($urandom %40 ==0 || cnt == 0 || i inside fpr_queue)begin
-        std::randomize(rnd3) with { rnd3 dist {0:/ 30, 1:/50, 2:/20};};
+      if($urandom %40 ==0 || cnt == 0 || i inside {fpr_queue})begin
+        void'(std::randomize(rnd3) with { rnd3 dist {0:/ 30, 1:/50, 2:/20};});
         if(rnd3 == 0)begin//gen new fp data
           wdata = gen_fp_data();
         end else if(rnd3 == 1)begin//gen new fp data with delta
@@ -5572,7 +5573,7 @@ task riscv_base_seq::init_fpr(int cnt);
     end
 
     //randomize fs
-    std::randomize(fs) with {fs dist {0 :/ 1, 1 :/ 50, 2 :/ 50, 3 :/ 2};};
+    void'(std::randomize(fs) with {fs dist {0 :/ 1, 1 :/ 50, 2 :/ 50, 3 :/ 2};});
 
     `uvm_info("set_fs", $psprintf("fs:%0d",fs), UVM_HIGH);
     wdata = fs <<13;
@@ -5600,7 +5601,7 @@ task riscv_base_seq::init_fcsr();
 
     //init fcsr.rm
     wdata = {$urandom, $urandom};
-    std::randomize(frm) with { frm dist {0:/ 40, [1:4]:/50, [5:7]:/3};};
+    void'(std::randomize(frm) with { frm dist {0:/ 40, [1:4]:/50, [5:7]:/3};});
     wdata[7:5] = frm;
     create_op_ld_gpr(tmp_gpr, wdata);
     create_op(OP_CSRRW, 0, tmp_gpr, 0, (`CSR_FCSR <<5));//write fscr
@@ -5838,14 +5839,14 @@ task riscv_base_seq::config_riscv_mode();
     if (dis_mmode == 0) begin
         if (dis_usmode == 0) begin
             if (dis_smode == 0) begin
-                std::randomize(mode) with {
+                void'(std::randomize(mode) with {
                     mode dist {PRIV_LEVEL_MMODE:/1, PRIV_LEVEL_SMODE:/2, PRIV_LEVEL_UMODE:/2};
-                };
+                });
             end
             else begin
-                std::randomize(mode) with {
+                void'(std::randomize(mode) with {
                     mode dist {PRIV_LEVEL_MMODE:/1, PRIV_LEVEL_UMODE:/2};
-                };
+                });
             end
         end
         else begin
@@ -5857,9 +5858,9 @@ task riscv_base_seq::config_riscv_mode();
             mode = PRIV_LEVEL_UMODE;
         end
         else begin
-            std::randomize(mode) with {
+            void'(std::randomize(mode) with {
                 mode dist {PRIV_LEVEL_SMODE:/1, PRIV_LEVEL_UMODE:/1};
-            };
+            });
         end
     end
 
@@ -6012,7 +6013,7 @@ end
             pmpcfg_cfg_txn.a = 0;
             pmpcfg_cfg_txn.s = 1;
             pmpcfg_cfg_txn.l = 1;
-            pmpcfg_cfg_txn.pack_cfg();
+            void'(pmpcfg_cfg_txn.pack_cfg());
             pmpaddr_cfg_txn.paddr = 0;
             m_init_pmpaddr_cfg[i] = pmpaddr_cfg_txn;
             m_init_pmpcfg_cfg[i]  = pmpcfg_cfg_txn;
@@ -6074,7 +6075,7 @@ task riscv_base_seq::config_mstatus();
 	    wdata[`RISCV_CSR_MSTATUS_SPP] = ($urandom%2) ? 0 : 1;
     end
 
-    std::randomize(fs) with {fs dist {1 :/ 50, 2 :/ 50, 3 :/ 2};};//skip 0 to initialize fpu successfully
+    void'(std::randomize(fs) with {fs dist {1 :/ 50, 2 :/ 50, 3 :/ 2};});//skip 0 to initialize fpu successfully
     wdata[`RISCV_CSR_MSTATUS_FS] = fs;//FS
     wdata[`RISCV_CSR_MSTATUS_XS] = $urandom;//XS
 
@@ -6262,7 +6263,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
 				return 1;
 			end
 
-			tr.randomize(imm_64) with {
+			void'(tr.randomize(imm_64) with {
 				imm_64[63:1] dist {[1:10]:/100, [11:'h7ffff]:/500, ['h7fff_ffff_fff8_0000:'h7fff_ffff_ffff_feff]:/300, ['h7fff_ffff_ffff_ff00:'h7fff_ffff_ffff_fff5]:/100, ['h7fff_ffff_ffff_fff6:'h7fff_ffff_ffff_fffe]:/10, 'h7fff_ffff_ffff_ffff:/1};
 
                 if (pc[63:20] == min_pc[63:20]) {
@@ -6286,7 +6287,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
                 }
 				imm_64[20:1] != 0;
 				imm_64[20:1] != 1;
-			};
+			});
 			tr.target = tr.pc + signed'({tr.imm_64[63:1], 1'b0});
 			tr.imm = tr.imm_64[31:0];
 			loop_cnt++;
@@ -6302,7 +6303,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
 				return 1;
 			end
 
-			tr.randomize(imm_64) with {
+			void'(tr.randomize(imm_64) with {
 				imm_64 dist {0:/1, [1:10]:/2, [11:'h7ff]:/15, ['hffff_ffff_ffff_f800:'hffff_ffff_ffff_fff0]:/15, ['hffff_ffff_ffff_fff1:'hffff_ffff_ffff_fffe]:/2, 'hffff_ffff_ffff_ffff:/1};
                 
                 if (gen_rvc_en == 0) {
@@ -6313,7 +6314,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
                 }
 				((base + signed'(imm_64)) & 'hffff_ffff_ffff_fffe) != pc;
 				((base + signed'(imm_64)) & 'hffff_ffff_ffff_fffe) != pc + 2;
-			};
+			});
 			tr.target = (base + signed'(tr.imm_64)) & 'hffff_ffff_ffff_fffe;
 			tr.imm = tr.imm_64[31:0];
 			loop_cnt++;
@@ -6327,7 +6328,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
 				return 1;
 			end
 
-			tr.randomize(imm_64) with {
+			void'(tr.randomize(imm_64) with {
 				imm_64[63:1] dist {[1:10]:/200, [11:'h7ff]:/500, ['h7fff_ffff_ffff_f800:'h7fff_ffff_ffff_feff]:/250, ['h7fff_ffff_ffff_ff00:'h7fff_ffff_ffff_fffe]:/50, 'h7fff_ffff_ffff_ffff:/1};
                 
                 if (pc[63:12] == min_pc[63:12]) {
@@ -6351,7 +6352,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
                 }
 				imm_64[12:1] != 0;
 				imm_64[12:1] != 1;
-			};
+			});
 			tr.target = tr.pc + signed'({tr.imm_64[63:1], 1'b0});
 			tr.imm = tr.imm_64[31:0];
 			loop_cnt++;
@@ -6365,7 +6366,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
 				return 1;
 			end
 
-			tr.randomize(imm_64) with {
+			void'(tr.randomize(imm_64) with {
 				imm_64[63:1] dist {[1:10]:/200, [11:'h3ff]:/500, ['h7fff_ffff_ffff_fc00:'h7fff_ffff_ffff_feff]:/250, ['h7fff_ffff_ffff_ff00:'h7fff_ffff_ffff_fffe]:/50, 'h7fff_ffff_ffff_ffff:/1};
                 
                 if (pc[63:11] == min_pc[63:11]) {
@@ -6383,7 +6384,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
 
 				((pc + signed'({imm_64[63:1], 1'b0})) % 4) dist {0:/1, 2:/1};
 				imm_64[11:1] != 0;
-			};
+			});
 			tr.target = tr.pc + signed'({tr.imm_64[63:1], 1'b0});
 			tr.imm = tr.imm_64[31:0];
 			loop_cnt++;
@@ -6405,7 +6406,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
 				return 1;
 			end
 
-			tr.randomize(imm_64) with {
+			void'(tr.randomize(imm_64) with {
 				imm_64[63:1] dist {[1:10]:/200, [11:'h7f]:/600, ['h7fff_ffff_ffff_ff80:'h7fff_ffff_ffff_ffcd]:/150, ['h7fff_ffff_ffff_ffce:'h7fff_ffff_ffff_fff5]:/50, ['h7fff_ffff_ffff_fff6:'h7fff_ffff_ffff_fffe]:/2, 'h7fff_ffff_ffff_ffff:/1};
                 
 				if (pc[63:8] == min_pc[63:8]) {
@@ -6423,7 +6424,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
 
 				((pc + signed'({imm_64[63:1], 1'b0})) % 4) dist {0:/1, 2:/1};
 				imm_64[8:1] != 0;
-			};
+			});
 			tr.target = tr.pc + signed'({tr.imm_64[63:1], 1'b0});
 			tr.imm = tr.imm_64[31:0];
 			loop_cnt++;
@@ -6555,7 +6556,7 @@ function bit riscv_base_seq::insert_jal(riscv_inst_base_txn tr, bit can_jump_off
 			return 1;
 		end
 
-		temp_txn.randomize(imm_64) with {
+		void'(temp_txn.randomize(imm_64) with {
             if (inst_arr[insert_pc].inst_bin_code_size == 2) {
 				imm_64[63:1] dist {[1:10]:/2, [11:'h3ff]:/5, ['h7fff_ffff_ffff_fc00:'h7fff_ffff_ffff_feff]:/5, ['h7fff_ffff_ffff_ff00:'h7fff_ffff_ffff_fffe]:/2, 'h7fff_ffff_ffff_ffff:/1};
             }
@@ -6570,7 +6571,7 @@ function bit riscv_base_seq::insert_jal(riscv_inst_base_txn tr, bit can_jump_off
 			}
 			
             if (can_jump_off_loop == 0) {
-				!((pc + signed'({imm_64[63:1], 1'b0})) inside loop_pc_queue);
+				!((pc + signed'({imm_64[63:1], 1'b0})) inside {loop_pc_queue});
 			}
 			
             if (gen_rvc_en == 0) {
@@ -6579,7 +6580,7 @@ function bit riscv_base_seq::insert_jal(riscv_inst_base_txn tr, bit can_jump_off
             else {
 			    ((pc + signed'({imm_64[63:1], 1'b0})) % 4) dist {0:/1, 2:/1};
             }
-		};
+		});
 		loop_cnt++;
 	end while (check_target_addr(temp_txn.pc + signed'({temp_txn.imm_64[63:1], 1'b0})) == 1);
 
@@ -7067,14 +7068,14 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
                 `uvm_info("debug", $psprintf("JALR target is in reserve region, re-randomize"), UVM_HIGH);
                 
                 jalr_rs1 = inst_arr[curr_pc].rs1;
-                inst_arr[curr_pc].randomize(rs1) with {
-                    rs1 inside gpr_queue;
+                void'(inst_arr[curr_pc].randomize(rs1) with {
+                    rs1 inside {gpr_queue};
                     rs1 != jalr_rs1;
                     if (inst_type == OP_C_JR || inst_type == OP_C_JALR) {
                         rs1 >= 8;
                         rs1 <= 15;
                     }
-                };
+                });
                 
                 store_inst_code(inst_arr[curr_pc]);
 
@@ -7160,7 +7161,7 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
                 `uvm_info("debug", $psprintf("add one more inst for fpu fsw inst"), UVM_HIGH);
                 inst_arr[curr_pc].fpu_inst_is_fixed =1;//set flag
                 txn = riscv_inst_base_txn::type_id::create("txn",,get_full_name());
-                txn.randomize();
+                void'(txn.randomize());
                 txn.inst_type = OP_SW;
                 txn.rs1 = inst_arr[curr_pc].rs1;
                 txn.imm = inst_arr[curr_pc].imm;
@@ -7178,7 +7179,7 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
                 // create a dummy op for next_pc
                 `uvm_info("debug", $psprintf("JALR target has memory access violation, create a dummy op for next_pc"), UVM_HIGH);
                 txn = riscv_inst_base_txn::type_id::create("txn",,get_full_name());
-                txn.randomize();
+                void'(txn.randomize());
                 txn.pc = next_pc;
                 txn.pc_pa.push_back('hdeadbeef_deadbeef_deadbeef_deadbeef_deadbeef_deadbeef_deadbeef_deadbeef);
 				txn.is_dummy_inst = 1;
@@ -7510,8 +7511,8 @@ function void riscv_base_seq::insert_inst_for_unexecuted_addr();
             if (has_4byte_room == 1) begin
                 check_addr_1 = (check_addr[63:2] << 2) + 0;
                 txn = new();
-                txn.randomize();
-                txn.gen_inst_bin_code();
+                void'(txn.randomize());
+                void'(txn.gen_inst_bin_code());
 				pc_pa = 0;
                 for (int i=0; i<txn.inst_bin_code_size; i++) begin
 					pc_pa[64*i+:64] = check_addr_1+i;
@@ -7527,10 +7528,10 @@ function void riscv_base_seq::insert_inst_for_unexecuted_addr();
             else if (has_2byte_room == 1) begin
                 check_addr_1 = (check_addr[63:1] << 1) + 0;
                 txn = new();
-                txn.randomize() with {
+                void'(txn.randomize() with {
                     inst_type > OP_ILLEGAL;  // 16bit inst
-                };
-                txn.gen_inst_bin_code();
+                });
+                void'(txn.gen_inst_bin_code());
 				pc_pa = 0;
                 for (int i=0; i<2; i++) begin
 					pc_pa[64*i+:64] = check_addr_1+i;
