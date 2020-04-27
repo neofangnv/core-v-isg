@@ -16,40 +16,14 @@
 # 
 ###############################################################################
 #
-# Common Makefile for the core-v-isg.
+# Makefile for the "unknown simulator".  
 #
 ###############################################################################
 
-# "Constants"
-MAKE           = make
-.DEFAULT_GOAL := no_rule 
+no_rule:
+	@echo 'no SIMULATOR and rule/target specified.'
+	@echo 'Usage: make SIMULATOR=<simulator> <target>'
+	@echo 'e.g: make SIMULATOR=vcs comp'
 
-# Compile compile flags for all simulators (careful!)
-WAVES        ?= 0
-SV_CMP_FLAGS ?= 
-TIMESCALE    ?= -timescale 1ns/1ps
-UVM_PLUSARGS ?=
-
-# User selectable simulator targets/rules
-SIMULATOR    ?= unsim 
-
-###############################################################################
-# Include the targets/rules for the selected SystemVerilog simulator
-#
-ifeq ($(SIMULATOR), dsim)
-include dsim.mk
-else
-ifeq ($(SIMULATOR), xrun)
-include xrun.mk
-else
-ifeq ($(SIMULATOR), vsim)
-include vsim.mk
-else
-ifeq ($(SIMULATOR), vcs)
-include vcs.mk
-else
-include unsim.mk
-endif
-endif
-endif
-endif
+%::
+	@echo '$(SIMULATOR): unknown simulator'
