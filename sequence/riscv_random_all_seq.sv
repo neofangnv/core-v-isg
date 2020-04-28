@@ -115,7 +115,7 @@ class riscv_random_all_seq extends riscv_base_seq;
         if (enable_csr == 1 && $urandom % insert_csr_freq == 0 && gen_inst_32_en == 1) begin
             `uvm_info("debug", $psprintf("generating a csr inst"), UVM_HIGH);
 
-            tr.inst_type = $urandom_range('h50, 'h55);
+            tr.inst_type = inst_type_e'($urandom_range('h50, 'h55));
             void'(tr.randomize(csr) with {
 			    if (m_curr_priv_level == PRIV_LEVEL_MMODE) {
                     csr dist {`CSR_MISA:=1, `CSR_MEDELEG:=10, `CSR_MIDELEG:=10, `CSR_MCYCLE:=1, `CSR_MCOUNTEREN:=0, `CSR_MSCRATCH:=5, `CSR_MEPC:=5, `CSR_MTVAL:=5, `CSR_SCOUNTEREN:=10, `CSR_SSCRATCH:=5, `CSR_SEPC:=5, `CSR_STVAL:=5, [`CSR_MHPMEVENT3:`CSR_MHPMEVENT10]:=1, [`CSR_MHPMCOUNTER3:`CSR_MHPMCOUNTER10]:/1};
@@ -170,11 +170,11 @@ class riscv_random_all_seq extends riscv_base_seq;
                 if (result == 1) begin
                     if (get_fetch_size(tr.inst_type) == 2) begin
                         `uvm_info("debug", $psprintf("Gen br inst not successed, gen a C ALU inst instead, pc = 0x%0x", tr.pc), UVM_HIGH);
-                        tr.inst_type = $urandom_range('h132, 'h137);
+                        tr.inst_type = inst_type_e'($urandom_range('h132, 'h137));
                     end
                     else begin
                         `uvm_info("debug", $psprintf("Gen br inst not successed, gen a ALU inst instead, pc = 0x%0x", tr.pc), UVM_HIGH);
-                        tr.inst_type = $urandom_range('h0, 'h1d);
+                        tr.inst_type = inst_type_e'($urandom_range('h0, 'h1d));
                     end
                 end
 		    end

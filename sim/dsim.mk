@@ -21,6 +21,7 @@
 DSIM                    = dsim
 DSIM_HOME              ?= /tools/Metrics/dsim
 DSIM_CMP_FLAGS         ?= $(TIMESCALE) $(SV_CMP_FLAGS)
+DSIM_CMP_WARN          ?= -warn InvalidWildMethod
 DSIM_UVM_ARGS          ?= +incdir+$(UVM_HOME)/src $(UVM_HOME)/src/uvm_pkg.sv
 DSIM_RESULTS           ?= $(PWD)/dsim_results
 DSIM_WORK              ?= $(DSIM_RESULTS)/dsim_work
@@ -67,6 +68,7 @@ mk_results:
 comp: mk_results
 	$(DSIM) \
 		$(DSIM_CMP_FLAGS) \
+		$(DSIM_CMP_WARN) \
 		$(DSIM_UVM_ARGS) \
 		$(DSIM_ACC_FLAGS) \
 		-sv_lib $(UVM_HOME)/src/dpi/libuvm_dpi.so \

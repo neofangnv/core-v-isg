@@ -57,14 +57,24 @@ class riscv_mem extends uvm_component;
   // mem load/store
   ///////////////////////
   function void mem_loadb(string filename, bit[63:0] start_addr=0);
-`ifdef DSIM
-    bit [7:0] tmp_mem [1000000];
-`else
-    bit [7:0] tmp_mem [*];
-`endif
     bit [63:0] addr;
+    bit [7:0] tmp_mem [*];
 
+`ifndef DSIM
+    // DSIM says: "Second argument to $readmem/$writemem task must be an integral array"
     $readmemb(filename, tmp_mem);
+`else
+    bit [7:0] dsim_mem [1000000];
+    $readmemb(filename, dsim_mem);
+    for (int i=0; i<1000000; i++) begin
+      if (dsim_mem[i] === 8'hXX) begin
+        break;
+      end
+      else begin
+        tmp_mem[i] = dsim_mem[i];
+      end
+    end
+`endif
 
     if (tmp_mem.first(addr))
     do begin
@@ -74,11 +84,11 @@ class riscv_mem extends uvm_component;
   endfunction
   
   function void mem_loadh(string filename, bit[63:0] start_addr=0);
-`ifdef DSIM
-    bit [7:0] tmp_mem [1000000];
-`else
+//`ifdef DSIM
+//    bit [7:0] tmp_mem [1000000];
+//`else
     bit [7:0] tmp_mem [*];
-`endif
+//`endif
     bit [63:0] addr;
         string str;
         int fh;
@@ -114,31 +124,47 @@ class riscv_mem extends uvm_component;
   endfunction
 
   function void mem_storeb(string filename, bit[63:0] start_addr=0);
-`ifdef DSIM
-    bit [7:0] tmp_mem [1000000];
-`else
     bit [7:0] tmp_mem [*];
-`endif
     bit [63:0] addr;
 
+`ifndef DSIM
     if (dut_mem.first(addr))
     do begin
       tmp_mem[addr-start_addr] = dut_mem[addr];
     end while (dut_mem.next(addr));
+    // DSIM says: "Second argument to $readmem/$writemem task must be an integral array"
+    $writememb(filename, tmp_mem);
+`else
+    int i = 0;
+    bit [7:0] dsim_mem [1000000];
+    do begin
+      dsim_mem[i++] = dut_mem[addr];
+    end while (dut_mem.next(addr));
+    $writememb(filename, dsim_mem);
+`endif
 
-      $writememb(filename, tmp_mem);
   endfunction
 
   function void mem_storeh(string filename, bit[63:0] start_addr=0);
     bit [7:0] tmp_mem [*];
     bit [63:0] addr;
 
-    if (dut_mem.first(addr))
+`ifndef DSIM
+    if (dut_mem.first(addr)) begin
+      do begin
+        tmp_mem[addr-start_addr] = dut_mem[addr];
+      end while (dut_mem.next(addr));
+    end
+    // DSIM says: "Second argument to $readmem/$writemem task must be an integral array"
+    $writememh(filename, tmp_mem);
+`else
+    int i = 0;
+    bit [7:0] dsim_mem [1000000];
     do begin
-      tmp_mem[addr-start_addr] = dut_mem[addr];
+      dsim_mem[i++] = dut_mem[addr];
     end while (dut_mem.next(addr));
-
-      $writememh(filename, tmp_mem);
+    $writememh(filename, dsim_mem);
+`endif
   endfunction
 
 endclass: riscv_mem
