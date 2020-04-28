@@ -64,7 +64,7 @@ class pmpaddr_cfg extends uvm_sequence_item;
     rand bit [63:0] max_addr                                   ;
     rand bit [64:0] range                                      ;
     bit full_range;
-    
+
 
     `uvm_object_utils_begin(pmpaddr_cfg)
 		`uvm_field_int(paddr     , UVM_ALL_ON)
@@ -83,7 +83,7 @@ class pmpaddr_cfg extends uvm_sequence_item;
 
     function void cal_addr(int cfg_mode);
         //the min range of a pmp entry is 1KB.
-        bit[63:0] tmp; 
+        bit[63:0] tmp;
         int    i;
         min_addr[1:0] = 'h0;
         max_addr[1:0] = 'h0;
@@ -129,7 +129,7 @@ class pmpaddr_cfg extends uvm_sequence_item;
                     paddr  = min_addr>>2;
                     tmp   = (1<<(i-3)) -1;
                     paddr  = paddr | tmp;
-                    range = (1<<i); 
+                    range = (1<<i);
                 end
             end
             else begin
@@ -141,7 +141,7 @@ class pmpaddr_cfg extends uvm_sequence_item;
         `uvm_info("debug", $psprintf("setup a core pmp entry. min_addr = 0x%16x, range = 0x%0x, paddr=0x%16x", min_addr, range, paddr), UVM_HIGH);
     endfunction
     function int is_in_entry_range(bit[63:0] addr);
-        return (addr>= min_addr) && (addr < (min_addr + range)); 
+        return (addr>= min_addr) && (addr < (min_addr + range));
     endfunction
 endclass
 
@@ -153,7 +153,7 @@ class pmpcfg_cfg extends uvm_sequence_item;
     rand bit[1:0] s;
     rand bit      l;
     bit[7:0]      value;
-    
+
     `uvm_object_utils_begin(pmpcfg_cfg)
 		`uvm_field_int(r, UVM_ALL_ON)
 		`uvm_field_int(w, UVM_ALL_ON)
@@ -387,7 +387,7 @@ class riscv_base_seq extends uvm_sequence #(riscv_inst_base_txn);
 	bit [63:0] init_timecmp;
     bit is_lsu_mis_align;
     bit random_pmp_cfg;
-  
+
     // enable randomly assert interrupt pin.
     bit interrupt_en;
 
@@ -474,13 +474,13 @@ class riscv_base_seq extends uvm_sequence #(riscv_inst_base_txn);
     bit [63:0] scounteren;
     bit [1:0] fs;
     bit [2:0] frm;
-    
+
     // trap vector
     bit [63:0] m_init_mmode_trap_vector;
     bit [63:0] m_curr_mmode_trap_vector;
     bit [63:0] m_init_smode_trap_vector;
     bit [63:0] m_curr_smode_trap_vector;
-    
+
     pmpaddr_cfg  m_init_pmpaddr_cfg[`MAX_PMP_ADDR_NUM];
     pmpcfg_cfg   m_init_pmpcfg_cfg [`MAX_PMP_ADDR_NUM];
 
@@ -500,13 +500,13 @@ class riscv_base_seq extends uvm_sequence #(riscv_inst_base_txn);
 
 	// store initial gpr value
 	rand_gpr c_gpr;
-    
+
     // reserve GPR to be used for TB, store backdoor memory base
     bit [4:0] reserve_gpr;
-    
+
     // reserve GPR to be used for TB, store boot vector
     bit [4:0] reserve_gpr_boot;
-    
+
     // reserve GPR to be used for TB, store stack address
     bit [4:0] reserve_gpr_stack;
 
@@ -519,7 +519,7 @@ class riscv_base_seq extends uvm_sequence #(riscv_inst_base_txn);
 
     // array to store all reserved GPR
     bit rsvd_gpr_arr [*];
-	
+
 	// create a local copy of memory array to calculate memory opertion result
 	// since riscv_mem's memory array can only be updated when instruction really executes in DUT
 	bit [7:0] m_mem [*];
@@ -537,9 +537,6 @@ class riscv_base_seq extends uvm_sequence #(riscv_inst_base_txn);
     // store all lsu pa which has been accessed before
     // used to make sure last self-loop instruction won't be accessed by previous LSU inst
     bit accessed_lsu_pa_arr[*];
-
-	// instruction result from tb side intruction reference
-	riscv_inst_result_txn tb_exp_queue[$];
 
     // pc management
     bit m_boot_pc[*];
@@ -626,7 +623,7 @@ class riscv_base_seq extends uvm_sequence #(riscv_inst_base_txn);
     extern virtual task config_pmp_region();
     extern virtual task config_trap_vector();
     extern virtual task config_interrupt_en();
-    extern virtual task config_delegation();    
+    extern virtual task config_delegation();
     extern virtual task config_riscv_mode();
     extern virtual task config_mtimecmp();
     extern virtual task init_pmp_cfg();
@@ -670,7 +667,7 @@ class riscv_base_seq extends uvm_sequence #(riscv_inst_base_txn);
 	extern function bit gen_insert_pc(riscv_inst_base_txn tr);
 	extern function bit insert_jal(riscv_inst_base_txn tr, bit can_jump_off_loop);
 	extern function fix_dead_loop_result_e fix_br_dead_loop(ref riscv_inst_base_txn tr, bit[63:0] target_addr);
-	
+
 	// LSU control function
 	extern function bit gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr, ref riscv_inst_base_txn tr);
 	extern function bit[63:0] get_lsu_va(riscv_inst_base_txn tr);
@@ -731,7 +728,7 @@ virtual task init_random_pmp_cfg();
         else begin
             pmpcfg_cfg_txn.a = (($urandom%5)==0) ? `PMP_TOR : `PMP_NAPOT;
         end
-        pmpcfg_cfg_txn.s = $urandom;  
+        pmpcfg_cfg_txn.s = $urandom;
         pmpcfg_cfg_txn.l = (($urandom%2)==0)  ? 0 : 1;
         pmpcfg_cfg_txn.pack_cfg();
         pmpaddr_cfg_txn.min_addr = (m_tvec_region.pa_range[i].min_addr<m_tvec_region.va_range[i].min_addr? m_tvec_region.pa_range[i].min_addr: m_tvec_region.va_range[i].min_addr);
@@ -763,7 +760,7 @@ virtual task init_random_pmp_cfg();
     pmpcfg_cfg_txn.w = 0;
     pmpcfg_cfg_txn.x = 1;
     pmpcfg_cfg_txn.a = (($urandom%5)==0) ? `PMP_TOR : `PMP_NAPOT;
-    pmpcfg_cfg_txn.s = $urandom;  
+    pmpcfg_cfg_txn.s = $urandom;
     pmpcfg_cfg_txn.l = (($urandom%2)==0)  ? 0 : 1;
     pmpcfg_cfg_txn.pack_cfg();
     pmpaddr_cfg_txn.min_addr = m_init_smode_trap_vector;
@@ -796,7 +793,7 @@ virtual task init_random_pmp_cfg();
         pmpcfg_cfg_txn.w = 0;
         pmpcfg_cfg_txn.x = $urandom;
         pmpcfg_cfg_txn.a = (($urandom%5)==0) ? `PMP_TOR : `PMP_NAPOT;
-        pmpcfg_cfg_txn.s = $urandom;  
+        pmpcfg_cfg_txn.s = $urandom;
         pmpcfg_cfg_txn.l = (($urandom%2)==0)  ? 0 : 1;
         pmpcfg_cfg_txn.pack_cfg();
         pmpaddr_cfg_txn.min_addr = (m_bkdr_data_region.pa_range[i].min_addr<m_bkdr_data_region.va_range[i].min_addr?m_bkdr_data_region.pa_range[i].min_addr:m_bkdr_data_region.va_range[i].min_addr);
@@ -823,14 +820,14 @@ virtual task init_random_pmp_cfg();
 		idx = curr_idx;
 		m_used_pmp_idx[idx] = 1;
 		curr_idx++;
-        
+
         pmpaddr_cfg_txn = new();
         pmpcfg_cfg_txn  = new();
         pmpcfg_cfg_txn.r = 1;
         pmpcfg_cfg_txn.w = 1;
         pmpcfg_cfg_txn.x = 0;
         pmpcfg_cfg_txn.a = (($urandom%5)==0) ? `PMP_TOR : `PMP_NAPOT;
-        pmpcfg_cfg_txn.s = $urandom;  
+        pmpcfg_cfg_txn.s = $urandom;
         pmpcfg_cfg_txn.l = (($urandom%2)==0)  ? 0 : 1;
         pmpcfg_cfg_txn.pack_cfg();
         pmpaddr_cfg_txn.min_addr = (m_stack_region.pa_range[i].min_addr<m_stack_region.va_range[i].min_addr?m_stack_region.pa_range[i].min_addr:m_stack_region.va_range[i].min_addr);
@@ -859,14 +856,14 @@ virtual task init_random_pmp_cfg();
 		idx = curr_idx;
 		m_used_pmp_idx[idx] = 1;
 		curr_idx++;
-        
+
         pmpaddr_cfg_txn = new();
         pmpcfg_cfg_txn  = new();
         pmpcfg_cfg_txn.r = $urandom;
         pmpcfg_cfg_txn.w = 0;
         pmpcfg_cfg_txn.x = 1;
         pmpcfg_cfg_txn.a = (($urandom%5)==0) ? `PMP_TOR : `PMP_NAPOT;
-        pmpcfg_cfg_txn.s = $urandom;  
+        pmpcfg_cfg_txn.s = $urandom;
         pmpcfg_cfg_txn.l = (($urandom%2)==0)  ? 0 : 1;
         pmpcfg_cfg_txn.pack_cfg();
         pmpaddr_cfg_txn.min_addr = (m_bvec_region.pa_range[i].min_addr<m_bvec_region.va_range[i].min_addr?m_bvec_region.pa_range[i].min_addr:m_bvec_region.va_range[i].min_addr);
@@ -901,7 +898,7 @@ virtual task init_random_pmp_cfg();
         pmpcfg_cfg_txn.w = 0;
         pmpcfg_cfg_txn.x = 1;
         pmpcfg_cfg_txn.a = (($urandom%5)==0) ? `PMP_TOR : `PMP_NAPOT;
-        pmpcfg_cfg_txn.s = $urandom;  
+        pmpcfg_cfg_txn.s = $urandom;
         pmpcfg_cfg_txn.l = (($urandom%2)==0)  ? 0 : 1;
         pmpcfg_cfg_txn.pack_cfg();
         pmpaddr_cfg_txn.min_addr = (m_code_region.pa_range[i].min_addr<m_code_region.va_range[i].min_addr?m_code_region.pa_range[i].min_addr:m_code_region.va_range[i].min_addr);
@@ -927,10 +924,10 @@ virtual task init_random_pmp_cfg();
     for(int i=0; i<idx; i++) begin
         for(int j=0; j<idx; j++) begin
             if((i!=j) && (m_init_pmpcfg_cfg[i].a !=0) && (m_init_pmpcfg_cfg[j].a !=0)) begin
-                if((m_init_pmpaddr_cfg[i].min_addr >= m_init_pmpaddr_cfg[j].min_addr) && 
+                if((m_init_pmpaddr_cfg[i].min_addr >= m_init_pmpaddr_cfg[j].min_addr) &&
                    ((m_init_pmpaddr_cfg[i].min_addr + m_init_pmpaddr_cfg[i].range) <= (m_init_pmpaddr_cfg[j].min_addr + m_init_pmpaddr_cfg[j].range)))
                    has_overlap = 1;
-                if((m_init_pmpaddr_cfg[i].min_addr <= m_init_pmpaddr_cfg[j].min_addr) && 
+                if((m_init_pmpaddr_cfg[i].min_addr <= m_init_pmpaddr_cfg[j].min_addr) &&
                    ((m_init_pmpaddr_cfg[i].min_addr + m_init_pmpaddr_cfg[i].range) >= (m_init_pmpaddr_cfg[j].min_addr + m_init_pmpaddr_cfg[j].range)))
                    has_overlap = 1;
                 if(has_overlap) break;
@@ -950,7 +947,7 @@ virtual task init_random_pmp_cfg();
         pmpcfg_cfg_txn.w = 1;
         pmpcfg_cfg_txn.x = 1;
         pmpcfg_cfg_txn.a = `PMP_NAPOT;
-        pmpcfg_cfg_txn.s = $urandom;  
+        pmpcfg_cfg_txn.s = $urandom;
         pmpcfg_cfg_txn.l = (($urandom%2)==0)  ? 0 : 1;
         m_init_pmpaddr_cfg[0] = pmpaddr_cfg_txn;
         m_init_pmpcfg_cfg[0]  = pmpcfg_cfg_txn;
@@ -959,10 +956,10 @@ virtual task init_random_pmp_cfg();
     // for data
     if (m_data_region != null) begin
         for (int i=0; i<m_data_region.va_range.size(); i++) begin
-            
+
             pmpaddr_cfg_txn = new();
             pmpcfg_cfg_txn = new();
-            
+
 			pmpcfg_cfg_txn.r = $urandom;
             pmpcfg_cfg_txn.w = $urandom;
             pmpcfg_cfg_txn.x = $urandom;
@@ -1002,10 +999,10 @@ virtual task init_random_pmp_cfg();
             s dist {0:/1, 1:/2};
             l dist {0:/1, 1:/2};
             };
-            idx = get_pmp_id(pmpcfg_cfg_txn); 
+            idx = get_pmp_id(pmpcfg_cfg_txn);
             pmpcfg_cfg_txn.pack_cfg();
 
-            pmpaddr_cfg_txn.randomize() with { 
+            pmpaddr_cfg_txn.randomize() with {
                //foreach (rsvd_region_queue[j]) {
                //     (pmpcfg_cfg_txn.a !=0) -> !(min_addr inside {[rsvd_region_queue[j].pa_range[0].min_addr:rsvd_region_queue[j].pa_range[0].max_addr]});
                //     (pmpcfg_cfg_txn.a !=0) -> !(max_addr inside {[rsvd_region_queue[j].pa_range[0].min_addr:rsvd_region_queue[j].pa_range[0].max_addr]});
@@ -1044,7 +1041,7 @@ virtual task init_random_pmp_cfg();
             m_init_pmpaddr_cfg[idx] = pmpaddr_cfg_txn;
             m_init_pmpcfg_cfg[idx]  = pmpcfg_cfg_txn;
     end
-    
+
     for (int i=`BROM_USED_PMP; i<`MAX_PMP_NUM; i++) begin
         `uvm_info("debug", $psprintf("\nFor pmp region %2d: pmpaddr = 0x%16x, range = 0x%16x, base = 0x%16x, pmpcfg = %2x, pmpcfg.r = %2d, pmpcfg.w = %2d, pmpcfg.x = %2d, pmpcfg.a = %2d, pmpcfg.s = %2d, pmpcfg.l = %2d", i, m_init_pmpaddr_cfg[i].paddr, m_init_pmpaddr_cfg[i].range, m_init_pmpaddr_cfg[i].min_addr,  m_init_pmpcfg_cfg[i].value , m_init_pmpcfg_cfg[i].r, m_init_pmpcfg_cfg[i].w, m_init_pmpcfg_cfg[i].x, m_init_pmpcfg_cfg[i].a, m_init_pmpcfg_cfg[i].s, m_init_pmpcfg_cfg[i].l), UVM_LOW);
     end
@@ -1176,7 +1173,7 @@ virtual task init_mmode_isr();
     // interrupt handler
     curr_pc = intr_handler_pc;
 	store_isr_inst_code_with_pc(OP_ANDI, mcause_gpr, mcause_gpr, 0, 'hf, curr_pc);  // mask interrupt bit (mcause[63])
-    
+
     curr_pc += 4;
     imm = signed'(0 - `RISCV_CSR_MCAUSE_EXCODE_M_SWINT);
 	store_isr_inst_code_with_pc(OP_ADDI, tmp_gpr, mcause_gpr, 0, imm, curr_pc);
@@ -1211,7 +1208,7 @@ virtual task init_mmode_isr();
     curr_pc += 4;
 	store_isr_inst_code_with_pc(OP_BEQ, 0, tmp_gpr, 0, ssint_offset, curr_pc);
 	ssint_handler_pc = curr_pc + ssint_offset;
-    
+
 	// for M external interrupt
     curr_pc += 4;
     store_isr_inst_code_with_pc(OP_LD, tmp_gpr, reserve_gpr_stack, 0, tmp_gpr_stack_offset, curr_pc);  // tmp_gpr
@@ -1378,7 +1375,7 @@ virtual task init_mmode_vectored_isr();
     curr_pc = m_init_mmode_trap_vector + 4 * `RISCV_CSR_MCAUSE_EXCODE_S_SWINT;
 	store_isr_inst_code_with_pc(OP_JAL, 0, 0, 0, ssint_offset, curr_pc); // jump to curr_pc+ssint_offset if it's S software interrupt
     ssint_handler_pc = curr_pc + ssint_offset;
-    
+
 	// exception handler
 	curr_pc = expt_handler_pc;
 
@@ -1495,7 +1492,7 @@ virtual task init_mmode_vectored_isr();
     next_pc = insert_random_inst_in_isr(curr_pc, 1, PRIV_LEVEL_MMODE);
     curr_pc = next_pc;
     store_isr_inst_code_with_pc(OP_MRET, 0, 0, 0, 0, curr_pc);
-    
+
     tmp_gpr_stack_offset = signed'(0);     // tmp_gpr (latest_pointer - 0)
     ori_stack_offset = signed'(-8);        // original stack address (lastest_pointer - 8)
 
@@ -1671,7 +1668,7 @@ virtual task init_smode_isr();
     // interrupt handler
     curr_pc = intr_handler_pc;
 	store_smode_isr_inst_code_with_pc(OP_ANDI, scause_gpr, scause_gpr, 0, 'hf, curr_pc);  // mask interrupt bit (scause[63])
-    
+
     curr_pc += 4;
     imm = signed'(0 - `RISCV_CSR_SCAUSE_EXCODE_S_TINT);
 	store_smode_isr_inst_code_with_pc(OP_ADDI, tmp_gpr, scause_gpr, 0, imm, curr_pc);
@@ -1685,7 +1682,7 @@ virtual task init_smode_isr();
     curr_pc += 4;
 	store_smode_isr_inst_code_with_pc(OP_BEQ, 0, tmp_gpr, 0, ssint_offset, curr_pc);
 	ssint_handler_pc = curr_pc + ssint_offset;
-    
+
 	// for S external interrupt
     curr_pc += 4;
     store_smode_isr_inst_code_with_pc(OP_ADDI, tmp_gpr, 0, 0, 1, curr_pc);
@@ -1772,7 +1769,7 @@ virtual task init_smode_vectored_isr();
     while (rsvd_gpr_arr.exists(scause_gpr) || scause_gpr == tmp_gpr) begin
 	    scause_gpr = $urandom_range(1, 31);
     end
-    
+
 
     curr_pc = m_init_smode_trap_vector;
 	store_smode_isr_inst_code_with_pc(OP_JAL, 0, 0, 0, expt_offset, curr_pc); // jump to curr_pc+expt_offset if it's exception
@@ -1923,7 +1920,7 @@ virtual task init_smode_vectored_isr();
     next_pc = insert_random_inst_in_isr(curr_pc, 1, PRIV_LEVEL_SMODE);
     curr_pc = next_pc;
     store_smode_isr_inst_code_with_pc(OP_SRET, 0, 0, 0, 0, curr_pc);
-    
+
 endtask
 
 virtual task init_mmode_isr_nest_expt();
@@ -1941,7 +1938,7 @@ virtual task init_mmode_isr_nest_expt();
     while (rsvd_gpr_arr.exists(tmp_gpr)) begin
         tmp_gpr = $urandom_range(1, 31);
     end
-    
+
     curr_pc = m_init_mmode_trap_vector;
 
     // save context
@@ -2033,7 +2030,7 @@ virtual function void init_mem_region();
 
     m_tvec_region = new();
     m_tvec_region.region_type = TYPE_TVEC;
-    
+
     // For M-mode trap vector
 	min_addr = m_init_mmode_trap_vector;
     max_addr = m_init_mmode_trap_vector+'h1000;
@@ -2084,7 +2081,7 @@ endfunction
 // Generate a fixed instruction which is from input parameter, add it to inst_arr
 virtual function void gen_fixed_inst(riscv_inst_base_txn tr);
     bit [255:0] pa;
-		
+
     pa = 0;
 	for (int i=0; i<get_fetch_size(tr.inst_type); i++) begin
 		pa[64*i+:64] = get_pa(tr.pc+i, 1, 0);
@@ -2176,7 +2173,7 @@ function riscv_base_seq::new (string name = "riscv_base_seq");
 	if (!$value$plusargs("MTVEC_MODE=%d", mtvec_mode)) begin
         mtvec_mode = 0;
     end
-	
+
     if (!$value$plusargs("STVEC_MODE=%d", stvec_mode)) begin
         stvec_mode = 0;
     end
@@ -2296,7 +2293,7 @@ function bit[4:0] riscv_base_seq::get_random_gpr();
 	return gpr;
 endfunction
 
-// get a random GPR for rd 
+// get a random GPR for rd
 // 1. not equal to reserve_gpr
 // 2. when gen_rvc_en=1, have low possibility to get 1/2/8~15 which is used by 16bit-inst, so that exception rate can be reduced
 function bit[4:0] riscv_base_seq::get_random_gpr_for_rd();
@@ -2313,7 +2310,7 @@ function bit[4:0] riscv_base_seq::get_random_gpr_for_rd();
             end
         end
     end
-	    
+
     if (valid_gpr_queue.size() == 0) begin
 		`uvm_fatal("fatal", $psprintf("No valid gpr found in gpr_queue"));
 	end
@@ -2381,7 +2378,7 @@ function bit[63:0] riscv_base_seq::gen_fp_data(int sign=-1, int expo=-1, longint
   int expo_bits=8;//single float
   int frac_bits=23;
 
-  sign = sign == -1 ? $urandom %2 : sign[0]; 
+  sign = sign == -1 ? $urandom %2 : sign[0];
 
   std::randomize(rnd) with { rnd dist {0:/10, 1:/20, 2:/40, 3:/10, 4:/15, 5:/10};};
   if (rnd == 0)begin//0
@@ -2396,7 +2393,7 @@ function bit[63:0] riscv_base_seq::gen_fp_data(int sign=-1, int expo=-1, longint
                                                [2** frac_bits *9/10 : 2** frac_bits -2] :/ 20,
                                                (2** frac_bits -1) :/10};};
   end else if(rnd == 2)begin//normal
-    std::randomize(expo_p) with { expo_p dist { 1 :/ 30, 
+    std::randomize(expo_p) with { expo_p dist { 1 :/ 30,
                                                [157 : 160] :/ 5, // 32-bit int
                                                [189 : 192] :/ 5, // 64-bit int
                                                [2 : 2** expo_bits *1/10 -1] :/ 20,
@@ -2667,85 +2664,85 @@ function bit riscv_base_seq::check_csr_exception(inst_type_e inst_type, bit[11:0
     // wrong privilege access check and legal csr check
     if (!(
           // M-mode CSRs
-          (csr == `CSR_MVENDORID) || 
-          (csr == `CSR_MARCHID) || 
-          (csr == `CSR_MIMPID) || 
-          (csr == `CSR_MHARTID) || 
-          (csr == `CSR_MSTATUS) || 
-          (csr == `CSR_MISA) || 
-          (csr == `CSR_MEDELEG) || 
-          (csr == `CSR_MIDELEG) || 
-          (csr == `CSR_MIE) || 
-          (csr == `CSR_MTVEC) || 
-          (csr == `CSR_MCOUNTEREN) || 
-          (csr >= `CSR_MHPMEVENT3 && csr <= `CSR_MHPMEVENT31) || 
-          (csr == `CSR_MSCRATCH) || 
-          (csr == `CSR_MEPC) || 
-          (csr == `CSR_MCAUSE) || 
-          (csr == `CSR_MTVAL) || 
-          (csr == `CSR_MIP) || 
-          (csr == `CSR_PMPCFG0) || 
-          (csr == `CSR_PMPCFG2) || 
-          (csr >= `CSR_PMPADDR0 && csr <= `CSR_PMPADDR15) || 
-          (csr == `CSR_MCYCLE) || 
-          (csr == `CSR_MINSTRET) || 
-          (csr >= `CSR_MHPMCOUNTER3 && csr <= `CSR_MHPMCOUNTER31) || 
-          (csr == `CSR_TSELECT) || 
-          (csr == `CSR_TDATA1) || 
-          (csr == `CSR_TDATA2) || 
-          (csr == `CSR_DCSR) || 
-          (csr == `CSR_MTIMECMP) || 
-          // S-mode CSRs 
-          (csr == `CSR_SSTATUS) || 
-          (csr == `CSR_SIE) || 
-          (csr == `CSR_STVEC) || 
-          (csr == `CSR_SCOUNTEREN) || 
-          (csr == `CSR_SSCRATCH) || 
-          (csr == `CSR_SEPC) || 
-          (csr == `CSR_SCAUSE) || 
-          (csr == `CSR_STVAL) || 
-          (csr == `CSR_SIP) || 
-          (csr == `CSR_SATP) || 
+          (csr == `CSR_MVENDORID) ||
+          (csr == `CSR_MARCHID) ||
+          (csr == `CSR_MIMPID) ||
+          (csr == `CSR_MHARTID) ||
+          (csr == `CSR_MSTATUS) ||
+          (csr == `CSR_MISA) ||
+          (csr == `CSR_MEDELEG) ||
+          (csr == `CSR_MIDELEG) ||
+          (csr == `CSR_MIE) ||
+          (csr == `CSR_MTVEC) ||
+          (csr == `CSR_MCOUNTEREN) ||
+          (csr >= `CSR_MHPMEVENT3 && csr <= `CSR_MHPMEVENT31) ||
+          (csr == `CSR_MSCRATCH) ||
+          (csr == `CSR_MEPC) ||
+          (csr == `CSR_MCAUSE) ||
+          (csr == `CSR_MTVAL) ||
+          (csr == `CSR_MIP) ||
+          (csr == `CSR_PMPCFG0) ||
+          (csr == `CSR_PMPCFG2) ||
+          (csr >= `CSR_PMPADDR0 && csr <= `CSR_PMPADDR15) ||
+          (csr == `CSR_MCYCLE) ||
+          (csr == `CSR_MINSTRET) ||
+          (csr >= `CSR_MHPMCOUNTER3 && csr <= `CSR_MHPMCOUNTER31) ||
+          (csr == `CSR_TSELECT) ||
+          (csr == `CSR_TDATA1) ||
+          (csr == `CSR_TDATA2) ||
+          (csr == `CSR_DCSR) ||
+          (csr == `CSR_MTIMECMP) ||
+          // S-mode CSRs
+          (csr == `CSR_SSTATUS) ||
+          (csr == `CSR_SIE) ||
+          (csr == `CSR_STVEC) ||
+          (csr == `CSR_SCOUNTEREN) ||
+          (csr == `CSR_SSCRATCH) ||
+          (csr == `CSR_SEPC) ||
+          (csr == `CSR_SCAUSE) ||
+          (csr == `CSR_STVAL) ||
+          (csr == `CSR_SIP) ||
+          (csr == `CSR_SATP) ||
           // U-mode CSRs
-          (csr == `CSR_FFLAGS) || 
-          (csr == `CSR_FRM) || 
-          (csr == `CSR_FCSR) || 
-          (csr == `CSR_CYCLE) || 
-          (csr == `CSR_TIME) || 
-          (csr == `CSR_INSTRET) || 
-          (csr >= `CSR_HPMCOUNTER3 && csr <= `CSR_HPMCOUNTER31) 
+          (csr == `CSR_FFLAGS) ||
+          (csr == `CSR_FRM) ||
+          (csr == `CSR_FCSR) ||
+          (csr == `CSR_CYCLE) ||
+          (csr == `CSR_TIME) ||
+          (csr == `CSR_INSTRET) ||
+          (csr >= `CSR_HPMCOUNTER3 && csr <= `CSR_HPMCOUNTER31)
          )) begin
         has_exception = 1;
     end
     else if ((
               // M-mode CSRs
-              (csr == `CSR_MVENDORID) || 
-              (csr == `CSR_MARCHID) || 
-              (csr == `CSR_MIMPID) || 
-              (csr == `CSR_MHARTID) || 
-              (csr == `CSR_MSTATUS) || 
-              (csr == `CSR_MISA) || 
-              (csr == `CSR_MEDELEG) || 
-              (csr == `CSR_MIDELEG) || 
-              (csr == `CSR_MIE) || 
-              (csr == `CSR_MTVEC) || 
-              (csr == `CSR_MCOUNTEREN) || 
-              (csr >= `CSR_MHPMEVENT3 && csr <= `CSR_MHPMEVENT31) || 
-              (csr == `CSR_MSCRATCH) || 
-              (csr == `CSR_MEPC) || 
-              (csr == `CSR_MCAUSE) || 
-              (csr == `CSR_MTVAL) || 
-              (csr == `CSR_MIP) || 
-              (csr == `CSR_PMPCFG0) || 
-              (csr == `CSR_PMPCFG2) || 
-              (csr >= `CSR_PMPADDR0 && csr <= `CSR_PMPADDR15) || 
-              (csr == `CSR_MCYCLE) || 
-              (csr == `CSR_MINSTRET) || 
-              (csr >= `CSR_MHPMCOUNTER3 && csr <= `CSR_MHPMCOUNTER31) || 
-              (csr == `CSR_TSELECT) || 
-              (csr == `CSR_TDATA1) || 
-              (csr == `CSR_TDATA2) || 
-              (csr == `CSR_DCSR) || 
+              (csr == `CSR_MVENDORID) ||
+              (csr == `CSR_MARCHID) ||
+              (csr == `CSR_MIMPID) ||
+              (csr == `CSR_MHARTID) ||
+              (csr == `CSR_MSTATUS) ||
+              (csr == `CSR_MISA) ||
+              (csr == `CSR_MEDELEG) ||
+              (csr == `CSR_MIDELEG) ||
+              (csr == `CSR_MIE) ||
+              (csr == `CSR_MTVEC) ||
+              (csr == `CSR_MCOUNTEREN) ||
+              (csr >= `CSR_MHPMEVENT3 && csr <= `CSR_MHPMEVENT31) ||
+              (csr == `CSR_MSCRATCH) ||
+              (csr == `CSR_MEPC) ||
+              (csr == `CSR_MCAUSE) ||
+              (csr == `CSR_MTVAL) ||
+              (csr == `CSR_MIP) ||
+              (csr == `CSR_PMPCFG0) ||
+              (csr == `CSR_PMPCFG2) ||
+              (csr >= `CSR_PMPADDR0 && csr <= `CSR_PMPADDR15) ||
+              (csr == `CSR_MCYCLE) ||
+              (csr == `CSR_MINSTRET) ||
+              (csr >= `CSR_MHPMCOUNTER3 && csr <= `CSR_MHPMCOUNTER31) ||
+              (csr == `CSR_TSELECT) ||
+              (csr == `CSR_TDATA1) ||
+              (csr == `CSR_TDATA2) ||
+              (csr == `CSR_DCSR) ||
               (csr == `CSR_MTIMECMP)
              )
              && (m_curr_priv_level == PRIV_LEVEL_SMODE || m_curr_priv_level == PRIV_LEVEL_UMODE)) begin
@@ -2753,50 +2750,50 @@ function bit riscv_base_seq::check_csr_exception(inst_type_e inst_type, bit[11:0
     end
     else if ((
               // M-mode CSRs
-              (csr == `CSR_MVENDORID) || 
-              (csr == `CSR_MARCHID) || 
-              (csr == `CSR_MIMPID) || 
-              (csr == `CSR_MHARTID) || 
-              (csr == `CSR_MSTATUS) || 
-              (csr == `CSR_MISA) || 
-              (csr == `CSR_MEDELEG) || 
-              (csr == `CSR_MIDELEG) || 
-              (csr == `CSR_MIE) || 
-              (csr == `CSR_MTVEC) || 
-              (csr == `CSR_MCOUNTEREN) || 
-              (csr >= `CSR_MHPMEVENT3 && csr <= `CSR_MHPMEVENT31) || 
-              (csr == `CSR_MSCRATCH) || 
-              (csr == `CSR_MEPC) || 
-              (csr == `CSR_MCAUSE) || 
-              (csr == `CSR_MTVAL) || 
-              (csr == `CSR_MIP) || 
-              (csr == `CSR_PMPCFG0) || 
-              (csr == `CSR_PMPCFG2) || 
-              (csr >= `CSR_PMPADDR0 && csr <= `CSR_PMPADDR15) || 
-              (csr == `CSR_MCYCLE) || 
-              (csr == `CSR_MINSTRET) || 
-              (csr >= `CSR_MHPMCOUNTER3 && csr <= `CSR_MHPMCOUNTER31) || 
-              (csr == `CSR_TSELECT) || 
-              (csr == `CSR_TDATA1) || 
-              (csr == `CSR_TDATA2) || 
-              (csr == `CSR_DCSR) || 
-              (csr == `CSR_MTIMECMP) || 
-              // S-mode CSRs 
-              (csr == `CSR_SSTATUS) || 
-              (csr == `CSR_SIE) || 
-              (csr == `CSR_STVEC) || 
-              (csr == `CSR_SCOUNTEREN) || 
-              (csr == `CSR_SSCRATCH) || 
-              (csr == `CSR_SEPC) || 
-              (csr == `CSR_SCAUSE) || 
-              (csr == `CSR_STVAL) || 
-              (csr == `CSR_SIP) || 
+              (csr == `CSR_MVENDORID) ||
+              (csr == `CSR_MARCHID) ||
+              (csr == `CSR_MIMPID) ||
+              (csr == `CSR_MHARTID) ||
+              (csr == `CSR_MSTATUS) ||
+              (csr == `CSR_MISA) ||
+              (csr == `CSR_MEDELEG) ||
+              (csr == `CSR_MIDELEG) ||
+              (csr == `CSR_MIE) ||
+              (csr == `CSR_MTVEC) ||
+              (csr == `CSR_MCOUNTEREN) ||
+              (csr >= `CSR_MHPMEVENT3 && csr <= `CSR_MHPMEVENT31) ||
+              (csr == `CSR_MSCRATCH) ||
+              (csr == `CSR_MEPC) ||
+              (csr == `CSR_MCAUSE) ||
+              (csr == `CSR_MTVAL) ||
+              (csr == `CSR_MIP) ||
+              (csr == `CSR_PMPCFG0) ||
+              (csr == `CSR_PMPCFG2) ||
+              (csr >= `CSR_PMPADDR0 && csr <= `CSR_PMPADDR15) ||
+              (csr == `CSR_MCYCLE) ||
+              (csr == `CSR_MINSTRET) ||
+              (csr >= `CSR_MHPMCOUNTER3 && csr <= `CSR_MHPMCOUNTER31) ||
+              (csr == `CSR_TSELECT) ||
+              (csr == `CSR_TDATA1) ||
+              (csr == `CSR_TDATA2) ||
+              (csr == `CSR_DCSR) ||
+              (csr == `CSR_MTIMECMP) ||
+              // S-mode CSRs
+              (csr == `CSR_SSTATUS) ||
+              (csr == `CSR_SIE) ||
+              (csr == `CSR_STVEC) ||
+              (csr == `CSR_SCOUNTEREN) ||
+              (csr == `CSR_SSCRATCH) ||
+              (csr == `CSR_SEPC) ||
+              (csr == `CSR_SCAUSE) ||
+              (csr == `CSR_STVAL) ||
+              (csr == `CSR_SIP) ||
               (csr == `CSR_SATP)
              )
              && (m_curr_priv_level == PRIV_LEVEL_UMODE)) begin
         has_exception = 1;
     end
-    
+
     // mcounteren/scounteren check
     if (mcounteren[0] == 0 && csr == `CSR_CYCLE && m_curr_priv_level != PRIV_LEVEL_MMODE) begin
         has_exception = 1;
@@ -2834,7 +2831,7 @@ function bit riscv_base_seq::check_csr_exception(inst_type_e inst_type, bit[11:0
             has_exception = 1;
         end
     end
-    
+
     // mcause/scause WLRL check
     if (csr == `CSR_MCAUSE) begin
         ori_value = mcause;
@@ -2894,7 +2891,7 @@ function bit riscv_base_seq::check_csr_exception(inst_type_e inst_type, bit[11:0
             csr == `CSR_CYCLE ||
             csr == `CSR_TIME ||
             csr == `CSR_INSTRET ||
-            (csr >= `CSR_HPMCOUNTER3 && csr <= `CSR_HPMCOUNTER31)) begin 
+            (csr >= `CSR_HPMCOUNTER3 && csr <= `CSR_HPMCOUNTER31)) begin
             has_exception = 1;
         end
     end
@@ -2962,7 +2959,7 @@ function csr_register riscv_base_seq::get_csr_reg(bit[11:0] csr);
 
         csr_reg.set_field(mpp, 12, 11);
         csr_reg.set_field_illegal_value(2);
-        
+
         csr_reg.set_field(spp, 8, 8);
         csr_reg.set_field(mpie, 7, 7);
         csr_reg.set_field(spie, 5, 5);
@@ -3273,7 +3270,7 @@ endfunction
 function bit riscv_base_seq::is_overlap_with_exist_pc(bit[63:0] addr, int bytes, bit is_fetch, ref bit[63:0] pc[$]);
     bit [63:0] loop_pc;
     bit [63:0] pa;
-    
+
     if (check_mem_trans_access_violation(addr, bytes, is_fetch, 0) == 1) begin
         return 0;
     end
@@ -3436,7 +3433,7 @@ function bit[31:0] riscv_base_seq::get_pmp_id(ref pmpcfg_cfg pmp_cfg);
     int idx;
     int has_found=0;
     pmpcfg_cfg  pmpcfg_cfg_txn ;
-    
+
     for (int i=0; i<`MAX_PMP_NUM; i++) begin
         if (!m_used_pmp_idx.exists(i)) begin
             idx_queue.push_back(i);
@@ -3521,7 +3518,7 @@ function void riscv_base_seq::set_pmp_region(bit[63:0] region_start, bit[63:0] r
         m_init_pmpaddr_cfg[idx-1] = pmpaddr_cfg_txn_1;
     end
 
-    
+
     m_init_pmpaddr_cfg[idx] = pmpaddr_cfg_txn;
     m_init_pmpcfg_cfg[idx]  = pmpcfg_cfg_txn;
 endfunction
@@ -3560,7 +3557,7 @@ function void riscv_base_seq::gen_gpr_queue();
 	bit [63:0] rand_val;
 	bit found_same_value;
     int idx;
-	
+
 	if(gpr_num + rsvd_gpr_arr.size() > 32)  gpr_num = 32 - rsvd_gpr_arr.size();
 	`uvm_info("SEQ_CFG", $psprintf("gpr_num = %0d", gpr_num), UVM_NONE);
 
@@ -3595,7 +3592,7 @@ function void riscv_base_seq::gen_gpr_queue();
 			i--;
 		end
 	end
-	
+
 	for (int i=0; i<gpr_num; i++) begin
 		`uvm_info("debug", $psprintf("gpr_queue[%0d] = %0d", i, gpr_queue[i]), UVM_HIGH);
 	end
@@ -3604,13 +3601,13 @@ endfunction
 
 function void riscv_base_seq::gen_fpr_queue(int cnt);
 	randc32 fpr_idx;
-	
+
     std::randomize(rnd) with { rnd dist {1:/5, [2:4]:/40, 5:/10, [6:10]:/5, [11:21]:/5, [22:31]:/30, 32:/5};};
     if(cnt != -1) rnd = cnt;
 	fpr_queue = new[rnd];
 
     std::randomize(fpr_queue) with { unique {fpr_queue};};
-	
+
     for(int i=0; i<rnd; i++)begin
 		`uvm_info("debug", $psprintf("fpr_queue[%0d] = %0d", i, fpr_queue[i]), UVM_NONE);
 	end
@@ -4488,8 +4485,8 @@ function bit[63:0] riscv_base_seq::calculate_op(inst_type_e inst_type, bit[63:0]
         end
 	end
     else if (has_exception == 1) begin
-        if (medeleg[cause] == 0 || 
-            m_curr_priv_level == PRIV_LEVEL_MMODE || 
+        if (medeleg[cause] == 0 ||
+            m_curr_priv_level == PRIV_LEVEL_MMODE ||
             cause == `RISCV_CSR_MCAUSE_EXCODE_SCALL ||
             cause == `RISCV_CSR_MCAUSE_EXCODE_MCALL) begin
             // trap to M-mode
@@ -4539,7 +4536,6 @@ endfunction
 function void riscv_base_seq::gen_inst_result();
 	bit [63:0] curr_pc;
 	bit [63:0] next_pc;
-	riscv_inst_result_txn txn;
 	int same_pc_times = 0;
     bit [31:0] inst_code;
     bit [63:0] pc_pa;
@@ -4567,17 +4563,10 @@ function void riscv_base_seq::gen_inst_result();
 
 				`uvm_info("cal_op", $psprintf("curr_pc = 0x%0x, inst_type = 0x%0x, rd = %0d, rs1 = %0d, rs2 = %0d, imm = 0x%0x, next_pc = 0x%0x, m_gpr[rs1] = 0x%0x, m_gpr[rs2] = 0x%0x, m_gpr[rd] = 0x%0x, is_change_store_inst = %0d, inst_code = 0x%0x, cause = %0d, instret = %0d", curr_pc, inst_arr[curr_pc].inst_type, inst_arr[curr_pc].rd, inst_arr[curr_pc].rs1, inst_arr[curr_pc].rs2, inst_arr[curr_pc].imm, next_pc, m_gpr[inst_arr[curr_pc].rs1], m_gpr[inst_arr[curr_pc].rs2], m_gpr[inst_arr[curr_pc].rd], inst_arr[curr_pc].is_change_store_inst, inst_code, cause, minstret), UVM_DEBUG);
                 //print_gpr(); //for debug
-                
+
                 if (inst_arr[curr_pc].is_rd_valid && rsvd_gpr_arr.exists(inst_arr[curr_pc].rd) && !m_boot_pc.exists(curr_pc) && !m_tvec_pc.exists(curr_pc) && next_pc != m_curr_mmode_trap_vector && next_pc != m_curr_smode_trap_vector && inst_arr[curr_pc].is_key_inst == 0 && (inst_arr[curr_pc].inst_type inside {OP_FEQ_S, OP_FLT_S, OP_FLE_S, OP_FCLASS_S, OP_FMV_X_S, OP_FCVT_W_S, OP_FCVT_WU_S, OP_FCVT_L_S, OP_FCVT_LU_S} || !(inst_arr[curr_pc].inst_type inside {['h70:'h8d]})) ) begin
                     `uvm_fatal("fatal", $psprintf("rd should not be in rsvd_arr, curr_pc = 0x%0x, inst_type = 0x%0x, rd = %0d, rs1 = %0d, rs2 = %0d, imm = 0x%0x", curr_pc, inst_arr[curr_pc].inst_type, inst_arr[curr_pc].rd, inst_arr[curr_pc].rs1, inst_arr[curr_pc].rs2, inst_arr[curr_pc].imm));
                 end
-				
-                txn = riscv_inst_result_txn::type_id::create("txn");
-				txn.pc = next_pc;
-				for (int i=0; i<32; i++) begin
-					txn.gpr[i] = m_gpr[i];
-				end
-				tb_exp_queue.push_back(txn);
 
 				if (next_pc == curr_pc) begin
 					same_pc_times++;
@@ -4691,7 +4680,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
 		    	    base + signed'(imm_64) <= max_addr;
                 }
 		    };
-            
+
             tr.imm = tr.imm_64[31:0];
 	        tr.target = base + signed'(tr.imm_64);
             loop_cnt++;
@@ -4717,7 +4706,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
 		    	    ((base + signed'(imm_64)) % 2 == 0) dist {0:/1, 1:/10};
                 }
 		    };
-            
+
             tr.imm = tr.imm_64[31:0];
 	        tr.target = base + signed'(tr.imm_64);
             loop_cnt++;
@@ -4751,7 +4740,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
 		    	    ((base + signed'(imm_64)) % 4 == 0) dist {0:/1, 1:/10};
                 }
 		    };
-            
+
             tr.imm = tr.imm_64[31:0];
 	        tr.target = base + signed'(tr.imm_64);
             loop_cnt++;
@@ -4777,7 +4766,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
 		    	    ((base + signed'(imm_64)) % 8 == 0) dist {0:/1, 1:/10};
                 }
 		    };
-            
+
             tr.imm = tr.imm_64[31:0];
 	        tr.target = base + signed'(tr.imm_64);
             loop_cnt++;
@@ -4814,7 +4803,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
 		    	    base + imm <= max_addr;
                 }
 		    };
-            
+
             tr.target = base + tr.imm;
             loop_cnt++;
         end while (check_lsu_target_addr(tr.inst_type, tr.target, 4) == 1);
@@ -4850,7 +4839,7 @@ function bit riscv_base_seq::gen_lsu_addr(bit[63:0] min_addr, bit[63:0] max_addr
 		    	    base + imm <= max_addr;
                 }
 		    };
-            
+
             tr.target = base + tr.imm;
             loop_cnt++;
         end while (check_lsu_target_addr(tr.inst_type, tr.target, 8) == 1);
@@ -5036,9 +5025,9 @@ function void riscv_base_seq::insert_fetch_bus_fault(bit[63:0] pc, int code_size
         do begin
             for (int i=0; i<inst_arr[loop_pc].pc_pa.size(); i++) begin
 				for (int j=0; j<inst_arr[loop_pc].inst_bin_code_size; j++) begin
-					if ((inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[0]>>8) || 
-						(inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[1]>>8) || 
-						(inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[2]>>8) || 
+					if ((inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[0]>>8) ||
+						(inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[1]>>8) ||
+						(inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[2]>>8) ||
 						(inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[3]>>8)) begin
                 	    found_same_pc_pa = 1;
                 	    break;
@@ -5051,9 +5040,9 @@ function void riscv_base_seq::insert_fetch_bus_fault(bit[63:0] pc, int code_size
         do begin
             for (int i=0; i<inst_arr[loop_pc].pc_pa.size(); i++) begin
 				for (int j=0; j<inst_arr[loop_pc].inst_bin_code_size; j++) begin
-					if ((inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[0]>>8) || 
-						(inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[1]>>8) || 
-						(inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[2]>>8) || 
+					if ((inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[0]>>8) ||
+						(inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[1]>>8) ||
+						(inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[2]>>8) ||
 						(inst_arr[loop_pc].pc_pa[i][64*j+:64]>>8) == (pc_pa[3]>>8)) begin
                 	    found_same_pc_pa = 1;
                 	    break;
@@ -5246,7 +5235,7 @@ function bit[31:0] riscv_base_seq::gen_isr_inst_code_with_pc(inst_type_e inst_ty
         tr.csr = imm[16:5];
     end
 	tr.gen_inst_bin_code();
-    
+
     // extra function than generating instruction code
     // put these code in gen_isr_inst_code_with_pc() because it's only called by store_isr_inst_code()
     tr.is_key_inst = 1;
@@ -5309,7 +5298,7 @@ task riscv_base_seq::store_smode_isr_inst_code_with_pc(inst_type_e inst_type, bi
     bit [255:0] branch_pc_pa;
     privilege_level_e ori_priv_level;
     int inst_code_size;
-    
+
     branch_pc = pc + trap_pc_offset_smode;
 	inst_code_size = get_fetch_size(inst_type);
 
@@ -5420,7 +5409,7 @@ task riscv_base_seq::create_op(inst_type_e inst_type, bit[4:0] rd, bit[4:0] rs1,
 	tr.gen_inst_bin_code();
 	tr.pc = m_curr_pc;
 	tr.is_key_inst = is_key_inst;
-    
+
 	for (int i=0; i<tr.inst_bin_code_size; i++) begin
     	pa[64*i+:64] = va2pa(tr.pc+i, 1);
 	end
@@ -5461,7 +5450,7 @@ task riscv_base_seq::create_op_with_pc(inst_type_e inst_type, bit[4:0] rd, bit[4
 	tr.imm = imm;
 	tr.pc = pc;
 	tr.gen_inst_bin_code();
-    
+
 	for (int i=0; i<tr.inst_bin_code_size; i++) begin
     	pa[64*i+:64] = va2pa(tr.pc+i, 1);
 	end
@@ -5592,7 +5581,7 @@ endtask
 task riscv_base_seq::init_fcsr();
     bit [4:0] tmp_gpr;
     bit [63:0] wdata;
-    
+
     tmp_gpr = get_random_non_zero_gpr();
 
     // save tmp_gpr
@@ -5747,9 +5736,9 @@ task riscv_base_seq::config_interrupt_en();
                 ie_seie = $urandom;
             end
 
-			while (ie_mtie == 0 && 
+			while (ie_mtie == 0 &&
                    ie_meie == 0 &&
-				   ie_msie == 0 && 
+				   ie_msie == 0 &&
                    // for S software/timer interrupt, it's triggered by ucode csr writing, can't depend on them for wfi wakeup
                    ie_seie == 0) begin
 				ie_msie = $urandom;
@@ -5797,7 +5786,7 @@ task riscv_base_seq::config_interrupt_en();
     imm[16:5] = `CSR_MSTATUS;
     imm[`RISCV_CSR_MSTATUS_MIE] = status_mie;
     create_op(OP_CSRRSI, rd, 0, 0, imm);
-    
+
     // configure sie
     if (dis_smode == 0) begin
         imm[16:5] = (($urandom%2)==0) ? `CSR_MSTATUS : `CSR_SSTATUS;
@@ -5994,7 +5983,7 @@ task riscv_base_seq::init_pmp_cfg();
 
     pmpaddr_cfg pmpaddr_cfg_txn ;
     pmpcfg_cfg  pmpcfg_cfg_txn  ;
-    
+
 //`ifdef RISCV_PA_EXTMEM1_EXISTS
 //    set_pmp_region(`RISCV_PA_EXTMEM1_START, `RISCV_PA_EXTMEM1_END);
 //`endif
@@ -6115,14 +6104,14 @@ task riscv_base_seq::test_init();
     // generate gpr_queue and fpr_queue and they could be used for GPR/FPR constraint
 	gen_gpr_queue();
     gen_fpr_queue();
-    
+
 	// initialize CSR variables
 	init_csr();
 
     // need to set each memory region, which may be used by others
 	// Of all these region, m_code_region/m_data_region could be not accurate since inst jump/load/store is not constrainted by this
 	init_mem_region();
-    
+
     if (check_all_region_validity() == 1) begin
         `uvm_fatal("fatal", "mem region check failed");
     end
@@ -6149,7 +6138,7 @@ task riscv_base_seq::test_init();
     config_mcounteren();
     config_mstatus();
     config_trap_vector();
-    
+
     gen_init_gpr();
     init_gpr();
     if(fpu_inst_en ==1) init_fcsr();
@@ -6304,7 +6293,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
 
 			tr.randomize(imm_64) with {
 				imm_64 dist {0:/1, [1:10]:/2, [11:'h7ff]:/15, ['hffff_ffff_ffff_f800:'hffff_ffff_ffff_fff0]:/15, ['hffff_ffff_ffff_fff1:'hffff_ffff_ffff_fffe]:/2, 'hffff_ffff_ffff_ffff:/1};
-                
+
                 if (gen_rvc_en == 0) {
 				    (base + signed'(imm_64)) % 4 == 0;
                 }
@@ -6329,7 +6318,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
 
 			tr.randomize(imm_64) with {
 				imm_64[63:1] dist {[1:10]:/200, [11:'h7ff]:/500, ['h7fff_ffff_ffff_f800:'h7fff_ffff_ffff_feff]:/250, ['h7fff_ffff_ffff_ff00:'h7fff_ffff_ffff_fffe]:/50, 'h7fff_ffff_ffff_ffff:/1};
-                
+
                 if (pc[63:12] == min_pc[63:12]) {
 				    pc + signed'({imm_64[63:1], 1'b0}) >= min_pc;
                 }
@@ -6367,7 +6356,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
 
 			tr.randomize(imm_64) with {
 				imm_64[63:1] dist {[1:10]:/200, [11:'h3ff]:/500, ['h7fff_ffff_ffff_fc00:'h7fff_ffff_ffff_feff]:/250, ['h7fff_ffff_ffff_ff00:'h7fff_ffff_ffff_fffe]:/50, 'h7fff_ffff_ffff_ffff:/1};
-                
+
                 if (pc[63:11] == min_pc[63:11]) {
 				    pc + signed'({imm_64[63:1], 1'b0}) >= min_pc;
                 }
@@ -6407,7 +6396,7 @@ function bit riscv_base_seq::gen_br_target(bit only_forward_jump, ref riscv_inst
 
 			tr.randomize(imm_64) with {
 				imm_64[63:1] dist {[1:10]:/200, [11:'h7f]:/600, ['h7fff_ffff_ffff_ff80:'h7fff_ffff_ffff_ffcd]:/150, ['h7fff_ffff_ffff_ffce:'h7fff_ffff_ffff_fff5]:/50, ['h7fff_ffff_ffff_fff6:'h7fff_ffff_ffff_fffe]:/2, 'h7fff_ffff_ffff_ffff:/1};
-                
+
 				if (pc[63:8] == min_pc[63:8]) {
 				    pc + signed'({imm_64[63:1], 1'b0}) >= min_pc;
                 }
@@ -6474,7 +6463,7 @@ function bit riscv_base_seq::gen_insert_pc_queue(riscv_inst_base_txn tr, bit[63:
 				`uvm_info("my_debug", $psprintf("pushing pc 0x%0x to insert_pc_queue\n", curr_pc), UVM_DEBUG);
 			end
 		end
-        
+
         for (int j=0; j<tr.pc_pa.size(); j++) begin
             inst_code = 0;
             for (int i=0; i<inst_arr[curr_pc].inst_bin_code_size; i++) begin
@@ -6564,15 +6553,15 @@ function bit riscv_base_seq::insert_jal(riscv_inst_base_txn tr, bit can_jump_off
             }
 
 			pc + signed'({imm_64[63:1], 1'b0}) > insert_jal_min_pc;
-			
+
             if (br_range != 0) {
 				pc + signed'({imm_64[63:1], 1'b0}) <= tr.pc + br_range;
 			}
-			
+
             if (can_jump_off_loop == 0) {
 				!((pc + signed'({imm_64[63:1], 1'b0})) inside loop_pc_queue);
 			}
-			
+
             if (gen_rvc_en == 0) {
                 (pc + signed'({imm_64[63:1], 1'b0})) % 4 == 0;
             }
@@ -6707,7 +6696,7 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
 				`uvm_warning("warning", $psprintf("TB generation timeout, exit with boot sequence, curr_seconds = %0d, init_seconds = %0d, delta_seconds = %0d", curr_seconds, init_seconds, curr_seconds-init_seconds));
 
                 // reset all control variables
-                if (inst_arr.first(loop_pc)) 
+                if (inst_arr.first(loop_pc))
 				do begin
                     if (!m_boot_pc.exists(loop_pc) && !m_tvec_pc.exists(loop_pc)) begin
 						inst_arr.delete(loop_pc);
@@ -6777,9 +6766,9 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
                     if (loop_pc != curr_pc) begin
                         for (int i=0; i<inst_arr[loop_pc].pc_pa.size(); i++) begin
 			    	    	for (int j=0; j<inst_arr[loop_pc].inst_bin_code_size; j++) begin
-			    	    		if (curr_pc_pa_0 == inst_arr[loop_pc].pc_pa[i][64*j+:64] || 
-			    	    			curr_pc_pa_1 == inst_arr[loop_pc].pc_pa[i][64*j+:64] || 
-			    	    			curr_pc_pa_2 == inst_arr[loop_pc].pc_pa[i][64*j+:64] || 
+			    	    		if (curr_pc_pa_0 == inst_arr[loop_pc].pc_pa[i][64*j+:64] ||
+			    	    			curr_pc_pa_1 == inst_arr[loop_pc].pc_pa[i][64*j+:64] ||
+			    	    			curr_pc_pa_2 == inst_arr[loop_pc].pc_pa[i][64*j+:64] ||
 			    	    			curr_pc_pa_3 == inst_arr[loop_pc].pc_pa[i][64*j+:64]) begin
                             	    `uvm_info("debug", $psprintf("found override existing pc pa, curr_pc = 0x%0x, curr_pc_pa_0 = 0x%0x, curr_pc_pa_1 = 0x%0x, curr_pc_pa_2 = 0x%0x, curr_pc_pa_3 = 0x%0x, loop_pc = 0x%0x", curr_pc, curr_pc_pa_0, curr_pc_pa_1, curr_pc_pa_2, curr_pc_pa_3, loop_pc), UVM_HIGH);
                             	    return 1;
@@ -6801,7 +6790,7 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
                 else begin
                     inst_arr[curr_pc].inst_bin_code_size = 2;
                 end
-			    
+
                 inst_code = 0;
                 curr_pc_pa = 0;
                 for (int i=0; i<inst_arr[curr_pc].inst_bin_code_size; i++) begin
@@ -6811,7 +6800,7 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
 
                 // replace original pc_pa which is deadbeef
                 inst_arr[curr_pc].pc_pa[0] = curr_pc_pa;
-                
+
                 // decode to get new op info for original dummy inst
                 inst_arr[curr_pc].inst_decode(inst_code);
             end
@@ -6824,9 +6813,9 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
         // these non-0-rd inst are caused by later store modifying inst code
         if (!m_tvec_pc.exists(curr_pc) && !m_boot_pc.exists(curr_pc)) begin
             if ((inst_arr[curr_pc].inst_type >= OP_CSRRW && inst_arr[curr_pc].inst_type <= OP_CSRRCI) &&
-                (inst_arr[curr_pc].rd != 0) && 
-                 inst_arr[curr_pc].csr != `CSR_MTIMECMP && 
-                 inst_arr[curr_pc].csr != `CSR_MIE && 
+                (inst_arr[curr_pc].rd != 0) &&
+                 inst_arr[curr_pc].csr != `CSR_MTIMECMP &&
+                 inst_arr[curr_pc].csr != `CSR_MIE &&
                  inst_arr[curr_pc].csr != `CSR_MSCRATCH &&
                  inst_arr[curr_pc].csr != `CSR_SSCRATCH &&
                  inst_arr[curr_pc].csr != `CSR_MEDELEG &&
@@ -6935,7 +6924,7 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
                         fetch_exception = 0;
                     end
                 end
-                    
+
                 if (fetch_exception == 0) begin
                     if (inst_arr[curr_pc].inst_type == OP_SB) begin
                         inst_arr[curr_pc].inst_type = $urandom ? OP_LB : OP_LBU;
@@ -7051,7 +7040,7 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
             end
         end
 
-        // change rd of fpu inst which will change gpr 
+        // change rd of fpu inst which will change gpr
         if (inst_arr[curr_pc].inst_type inside {OP_FEQ_S, OP_FLT_S, OP_FLE_S, OP_FCLASS_S, OP_FMV_X_S, OP_FCVT_W_S, OP_FCVT_WU_S, OP_FCVT_L_S, OP_FCVT_LU_S} && inst_arr[curr_pc].rd !=0 && (curr_pc +4) == next_pc ) begin
                 `uvm_info("debug", $psprintf("found fpu inst with rd: %0d", inst_arr[curr_pc].rd), UVM_HIGH);
                 //set rd to 0
@@ -7065,7 +7054,7 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
             (m_stack_region.is_addr_in_va_range(next_pc) == 1)) begin
             if (inst_arr[curr_pc].inst_type == OP_JALR || inst_arr[curr_pc].inst_type == OP_C_JR || inst_arr[curr_pc].inst_type == OP_C_JALR) begin
                 `uvm_info("debug", $psprintf("JALR target is in reserve region, re-randomize"), UVM_HIGH);
-                
+
                 jalr_rs1 = inst_arr[curr_pc].rs1;
                 inst_arr[curr_pc].randomize(rs1) with {
                     rs1 inside gpr_queue;
@@ -7075,7 +7064,7 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
                         rs1 <= 15;
                     }
                 };
-                
+
                 store_inst_code(inst_arr[curr_pc]);
 
                 curr_pc = init_start_pc;
@@ -7142,7 +7131,7 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
 	                    init_m_mem();
                         init_csr();
                         if (re_randomize == 1) begin
-                            if (inst_arr.first(loop_pc)) 
+                            if (inst_arr.first(loop_pc))
 				            do begin
                                 if (!m_boot_pc.exists(loop_pc) && !m_tvec_pc.exists(loop_pc)) begin
 				            		inst_arr.delete(loop_pc);
@@ -7216,7 +7205,7 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
             else begin
                 `uvm_fatal("fatal", $psprintf("impossible case, valid_next_pc_bytes = %0d, curr_pc = 0x%0x, next_pc = 0x%0x", valid_next_pc_bytes, curr_pc, next_pc));
             end
-            
+
 			txn = gen_inst(next_pc, gen_inst_32_en, gen_fail);
 			if (gen_fail == 1) begin
 				`uvm_info("debug", $psprintf("Got gen fail for gen_inst(), re-randomize, curr_pc = 0x%0x, next_pc = 0x%0x", curr_pc, next_pc), UVM_HIGH);
@@ -7369,13 +7358,13 @@ function bit riscv_base_seq::check_pmp_violation(bit[63:0] pa, bit is_fetch, bit
              end
              if(pa inside {[min_addr:max_addr-1]})
                  found_pa = 1;
-             
+
              if(found_pa ) break;
          end
     end
     if(~(found_pa) && (curr_chk_priv_level == PRIV_LEVEL_MMODE)) return 0;  //miss, mmode
     else if(~(found_pa) && (curr_chk_priv_level != PRIV_LEVEL_MMODE)) return 1; //miss, s/u mode
-    
+
     //found_pa==1
     if((curr_chk_priv_level == PRIV_LEVEL_MMODE) && !m_init_pmpcfg_cfg[i].l) begin
         return 0;
@@ -7435,7 +7424,7 @@ function bit riscv_base_seq::check_pmp_cross_boundary(bit[63:0] pa_queue[$]);
              end
              if(found_pa == 1) break;
          end
-    end 
+    end
     return 0;
 endfunction
 
