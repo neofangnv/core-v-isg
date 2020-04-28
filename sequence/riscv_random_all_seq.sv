@@ -58,8 +58,8 @@ class riscv_random_all_seq extends riscv_base_seq;
     
     // override original task to generate GPRs which are easy to produce valid IFU/LSU pa
     virtual task gen_init_gpr();
-        c_gpr = new();
-    	c_gpr.randomize() with {
+      c_gpr = new();
+    	void'(c_gpr.randomize() with {
             if (gen_rvc_en == 1) {
 				// reduce possibility for RVC load/store exception
                 (gpr[1][2:0] == 0) dist {0:/1, 1:/100};
@@ -72,7 +72,7 @@ class riscv_random_all_seq extends riscv_base_seq;
                 (gpr[13][2:0] == 0) dist {0:/1, 1:/10};
                 (gpr[14][2:0] == 0) dist {0:/1, 1:/10};
             }
-        };
+      });
     	for (int i=0; i<31; i++) begin
     		`uvm_info("INIT_GPR_DUMP", $psprintf("Initial randomized gpr[%0d] = 0x%0x\n", i+1, c_gpr.gpr[i]), UVM_HIGH);
     	end
@@ -86,7 +86,7 @@ class riscv_random_all_seq extends riscv_base_seq;
 
         tr = riscv_inst_base_txn::type_id::create("tr",,get_full_name());
 
-        tr.randomize() with {
+        void'(tr.randomize() with {
             if (gen_rvc_en == 0) {
                 inst_type dist {OP_LUI:=15, OP_AUIPC:=15, OP_ADDI:=15, OP_SLTI:=5, OP_SLTIU:=5, OP_XORI:=5, OP_ORI:=5, OP_ANDI:=5, OP_SLLI:=5, OP_SRLI:=5, OP_SRAI:=5, OP_ADD:=15, OP_SUB:=15, OP_SLL:=5, OP_SLT:=5, OP_SLTU:=5, OP_XOR:=5, OP_SRL:=5, OP_SRA:=5, OP_OR:=5, OP_AND:=5, OP_ADDIW:=15, OP_SLLIW:=5, OP_SRLIW:=5, OP_SRAIW:=5, OP_ADDW:=15, OP_SUBW:=15, OP_SLLW:=5, OP_SRLW:=5, OP_SRAW:=5, OP_JAL:=10, OP_JALR:=5, ['h22:'h27]:/60, ['h30:'h3c]:/100, OP_LB:=5, OP_LBU:=5, OP_SB:=10, OP_LH:=5, OP_LHU:=5, OP_SH:=10, OP_LW:=5, OP_LWU:=5, OP_SW:=10, OP_LD:=10, OP_SD:=10, OP_WFI:=1, OP_ECALL:=1, OP_EBREAK:=1, OP_FENCE:=1, OP_FENCEI:=1, OP_SFENCE:=1};
             }
@@ -98,15 +98,15 @@ class riscv_random_all_seq extends riscv_base_seq;
                 OP_C_LWSP:=3, OP_C_LDSP:=3, OP_C_SWSP:=2, OP_C_SDSP:=2, OP_C_LW:=10, OP_C_LD:=10, OP_C_SW:=10, OP_C_SD:=10, OP_C_J:=10, OP_C_JR:=2, OP_C_JALR:=2, OP_C_BEQZ:=10, OP_C_BNEZ:=10, ['h120:'h123]:=10, OP_C_ADDI16SP:=1, ['h125:'h137]:=10, OP_C_NOP:=1, OP_C_EBREAK:=1};
             }
 
-			rs1 inside gpr_queue;
-			rs2 inside gpr_queue;
-			rd inside gpr_queue;
+			rs1 inside {gpr_queue};
+			rs2 inside {gpr_queue};
+			rd inside  {gpr_queue};
             
 			if (gen_rvc_en == 1) {
                 (rd inside {1, 2, [8:15]}) dist {0:/5, 1:/1};
                 (rd == 2) dist {0:/100, 1:/1};
             }
-		};
+		});
 
         tr.pc = pc;
 
@@ -115,15 +115,15 @@ class riscv_random_all_seq extends riscv_base_seq;
         if (enable_csr == 1 && $urandom % insert_csr_freq == 0 && gen_inst_32_en == 1) begin
             `uvm_info("debug", $psprintf("generating a csr inst"), UVM_HIGH);
 
-            tr.inst_type = $urandom_range('h50, 'h55);
-            tr.randomize(csr) with {
+            tr.inst_type = inst_type_e'($urandom_range('h50, 'h55));
+            void'(tr.randomize(csr) with {
 			    if (m_curr_priv_level == PRIV_LEVEL_MMODE) {
                     csr dist {`CSR_MISA:=1, `CSR_MEDELEG:=10, `CSR_MIDELEG:=10, `CSR_MCYCLE:=1, `CSR_MCOUNTEREN:=0, `CSR_MSCRATCH:=5, `CSR_MEPC:=5, `CSR_MTVAL:=5, `CSR_SCOUNTEREN:=10, `CSR_SSCRATCH:=5, `CSR_SEPC:=5, `CSR_STVAL:=5, [`CSR_MHPMEVENT3:`CSR_MHPMEVENT10]:=1, [`CSR_MHPMCOUNTER3:`CSR_MHPMCOUNTER10]:/1};
                 }
 			    else if (m_curr_priv_level == PRIV_LEVEL_SMODE) {
                     csr dist {`CSR_SCOUNTEREN:=10, `CSR_SSCRATCH:=5, `CSR_SEPC:=5, `CSR_STVAL:=5};
                 }
-            };
+            });
 			
 			tr.rd = 0;
             tr.imm[16:5] = tr.csr;
@@ -170,17 +170,17 @@ class riscv_random_all_seq extends riscv_base_seq;
                 if (result == 1) begin
                     if (get_fetch_size(tr.inst_type) == 2) begin
                         `uvm_info("debug", $psprintf("Gen br inst not successed, gen a C ALU inst instead, pc = 0x%0x", tr.pc), UVM_HIGH);
-                        tr.inst_type = $urandom_range('h132, 'h137);
+                        tr.inst_type = inst_type_e'($urandom_range('h132, 'h137));
                     end
                     else begin
                         `uvm_info("debug", $psprintf("Gen br inst not successed, gen a ALU inst instead, pc = 0x%0x", tr.pc), UVM_HIGH);
-                        tr.inst_type = $urandom_range('h0, 'h1d);
+                        tr.inst_type = inst_type_e'($urandom_range('h0, 'h1d));
                     end
                 end
 		    end
 		    else if ((tr.inst_type >= OP_LB && tr.inst_type <= OP_SD) || (tr.inst_type >= OP_C_LWSP && tr.inst_type <= OP_C_SD) || tr.inst_type inside {OP_FLW, OP_FSW} ) begin
                 // min_addr/max_addr is useless here, set them to 0
-		    	gen_lsu_addr(0, 0, tr);
+		    	void'(gen_lsu_addr(0, 0, tr));
 		    end
         end
 		
@@ -215,7 +215,7 @@ class riscv_random_all_seq extends riscv_base_seq;
             end
 		end while (inst_arr.next(m_pc));
 
-		this.randomize();
+		void'(this.randomize());
 		`uvm_info("SEQ_LEN", $psprintf("seq_len = %0d\n", seqlen), UVM_NONE);
 		m_start_pc = m_curr_pc;
 
