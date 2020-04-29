@@ -1,18 +1,18 @@
-/*
- * Copyright (c) 2017, NVIDIA CORPORATION.  All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+//
+// Copyright (c) 2017, NVIDIA CORPORATION.  All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 
 `ifndef RISCV_BASE_SEQ__SV
 `define RISCV_BASE_SEQ__SV
@@ -445,9 +445,9 @@ class riscv_base_seq extends uvm_sequence #(riscv_inst_base_txn);
     } privilege_level_e;
 
 
-  //*************************************
+    /////////////////////////////////
     // csr related configuration
-  //*************************************
+    /////////////////////////////////
     bit [63:0] mepc;
     bit [1:0] mpp;
     bit mie;
@@ -573,9 +573,9 @@ class riscv_base_seq extends uvm_sequence #(riscv_inst_base_txn);
     int trap_pc_offset = 0;
     int trap_pc_offset_smode = 0;
 
-  //*************************************
+  //
   // variables used for branch control
-  //*************************************
+  //
   bit [63:0] min_pc;  // the first instruction pc out of boot sequence
 
   int br_range;
@@ -6205,9 +6205,9 @@ function void riscv_base_seq::init_m_mem();
   end while (m_init_mem.next(addr));
 endfunction: init_m_mem
 
-//*********************************
+//
 // Branch control functions
-//*********************************
+//
 
 // branch target address can't be in boot vector, trap vector, backdoor region
 // return 0 if legal, return 1 if illegal
@@ -7004,58 +7004,58 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
         if ((inst_arr[curr_pc].inst_type == OP_SB || inst_arr[curr_pc].inst_type == OP_SH || inst_arr[curr_pc].inst_type == OP_SW || inst_arr[curr_pc].inst_type == OP_FSW || inst_arr[curr_pc].inst_type == OP_SD || inst_arr[curr_pc].inst_type == OP_C_SW || inst_arr[curr_pc].inst_type == OP_C_SWSP || inst_arr[curr_pc].inst_type == OP_C_SD || inst_arr[curr_pc].inst_type == OP_C_SDSP) && next_pc != m_curr_mmode_trap_vector && next_pc != m_curr_smode_trap_vector) begin
             lsu_pa = get_lsu_pa(inst_arr[curr_pc]);
             lsu_pa = lsu_pa & 'hffff_ffff_ffff_ffc0;
-            /*
+
             // TODO: discuss with Neo Fang.
-            if (riscv_mem::fbif_err.exists(lsu_pa)) begin
-                if (inst_arr[curr_pc].inst_type == OP_SB) begin
-                    inst_arr[curr_pc].inst_type = $urandom ? OP_LB : OP_LBU;
-                end
-                else if (inst_arr[curr_pc].inst_type == OP_SH) begin
-                    inst_arr[curr_pc].inst_type = $urandom ? OP_LH : OP_LHU;
-                end
-                else if (inst_arr[curr_pc].inst_type == OP_SW) begin
-                    inst_arr[curr_pc].inst_type = $urandom ? OP_LW : OP_LWU;
-                end
-                else if (inst_arr[curr_pc].inst_type == OP_FSW) begin
-                    inst_arr[curr_pc].inst_type = OP_FLW;
-                end
-                else if (inst_arr[curr_pc].inst_type == OP_SD) begin
-                    inst_arr[curr_pc].inst_type = OP_LD;
-                end
-                else if (inst_arr[curr_pc].inst_type == OP_C_SW) begin
-                    inst_arr[curr_pc].inst_type = OP_C_LW;
-                end
-                else if (inst_arr[curr_pc].inst_type == OP_C_SWSP) begin
-                    inst_arr[curr_pc].inst_type = OP_C_LWSP;
-                end
-                else if (inst_arr[curr_pc].inst_type == OP_C_SD) begin
-                    inst_arr[curr_pc].inst_type = OP_C_LD;
-                end
-                else if (inst_arr[curr_pc].inst_type == OP_C_SDSP) begin
-                    inst_arr[curr_pc].inst_type = OP_C_LDSP;
-                end
-                else begin
-                    `uvm_fatal("fatal", $psprintf("unexpected inst_type 0x%0x", inst_arr[curr_pc].inst_type));
-                end
-
-                store_inst_code(inst_arr[curr_pc]);
-
-                `uvm_info("debug", $psprintf("change store code address inst (pc = 0x%0x) to load, because it's storing fbif fault address, st_pa = 0x%0x", curr_pc, lsu_pa), UVM_HIGH);
-
-                // re loop
-                curr_pc = init_start_pc;
-                back_br_arr.delete;
-                pc_arr.delete;
-                accessed_lsu_pa_arr.delete;
-                for (int i=0; i<32; i++) begin
-                  m_gpr[i] = 0;
-                end
-                loop_retry = 0;
-                init_m_mem();
-                init_csr();
-                continue;
-            end
-            */
+            //if (riscv_mem::fbif_err.exists(lsu_pa)) begin
+            //    if (inst_arr[curr_pc].inst_type == OP_SB) begin
+            //        inst_arr[curr_pc].inst_type = $urandom ? OP_LB : OP_LBU;
+            //    end
+            //    else if (inst_arr[curr_pc].inst_type == OP_SH) begin
+            //        inst_arr[curr_pc].inst_type = $urandom ? OP_LH : OP_LHU;
+            //    end
+            //    else if (inst_arr[curr_pc].inst_type == OP_SW) begin
+            //        inst_arr[curr_pc].inst_type = $urandom ? OP_LW : OP_LWU;
+            //    end
+            //    else if (inst_arr[curr_pc].inst_type == OP_FSW) begin
+            //        inst_arr[curr_pc].inst_type = OP_FLW;
+            //    end
+            //    else if (inst_arr[curr_pc].inst_type == OP_SD) begin
+            //        inst_arr[curr_pc].inst_type = OP_LD;
+            //    end
+            //    else if (inst_arr[curr_pc].inst_type == OP_C_SW) begin
+            //        inst_arr[curr_pc].inst_type = OP_C_LW;
+            //    end
+            //    else if (inst_arr[curr_pc].inst_type == OP_C_SWSP) begin
+            //        inst_arr[curr_pc].inst_type = OP_C_LWSP;
+            //    end
+            //    else if (inst_arr[curr_pc].inst_type == OP_C_SD) begin
+            //        inst_arr[curr_pc].inst_type = OP_C_LD;
+            //    end
+            //    else if (inst_arr[curr_pc].inst_type == OP_C_SDSP) begin
+            //        inst_arr[curr_pc].inst_type = OP_C_LDSP;
+            //    end
+            //    else begin
+            //        `uvm_fatal("fatal", $psprintf("unexpected inst_type 0x%0x", inst_arr[curr_pc].inst_type));
+            //    end
+            //
+            //    store_inst_code(inst_arr[curr_pc]);
+            //
+            //    `uvm_info("debug", $psprintf("change store code address inst (pc = 0x%0x) to load, because it's storing fbif fault address, st_pa = 0x%0x", curr_pc, lsu_pa), UVM_HIGH);
+            //
+            //    // re loop
+            //    curr_pc = init_start_pc;
+            //    back_br_arr.delete;
+            //    pc_arr.delete;
+            //    accessed_lsu_pa_arr.delete;
+            //    for (int i=0; i<32; i++) begin
+            //      m_gpr[i] = 0;
+            //    end
+            //    loop_retry = 0;
+            //    init_m_mem();
+            //    init_csr();
+            //    continue;
+            //end
+            //
         end
 
         // change rd of fpu inst which will change gpr
