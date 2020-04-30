@@ -16,11 +16,12 @@
 # 
 ###############################################################################
 
-VCS                = VCS
+VCS                = vcs
 VCS_HOME          ?=
-VCS_CMP_FLAGS     ?=
-VCS_UVM_ARGS      ?=
-VCS_RESULTS       ?=
+VCS_CMP_LOG       ?= comp.log
+VCS_CMP_FLAGS     ?= -sverilog
+VCS_UVM_ARGS      ?= -ntb_opts uvm
+VCS_RESULTS       ?= csrc simv.daidir simv vc_hdrs.h
 VCS_RUN_FLAGS     ?=
 
 # Variables to control wave dumping from command the line
@@ -60,23 +61,22 @@ help:
 	vcs -help
 
 # VCS compile target
-comp: no_rule
-#	$(VCS) \
-#		$(VCS_CMP_FLAGS) \
-#		$(VCS_UVM_ARGS) \
-#		$(VCS_ACC_FLAGS) \
-#		-sv_lib $(UVM_HOME)/src/dpi/libuvm_dpi.so \
-#		+incdir+../memory \
-#		+incdir+../parameter \
-#		+incdir+../sequence \
-#		+incdir+../transaction \
-#		./CV32E40P_macros.sv \
-#		../transaction/riscv_txn_pkg.sv \
-#		../memory/riscv_memory_pkg.sv \
-#		../parameter/riscv_params.sv \
-#		../sequence/riscv_base_seq.sv \
-#		../sequence/riscv_random_all_seq.sv \
-#		+$(UVM_PLUSARGS)
+comp:
+	$(VCS) \
+		-l $(VCS_CMP_LOG) \
+		$(VCS_CMP_FLAGS) \
+		$(VCS_UVM_ARGS) \
+		+incdir+../memory \
+		+incdir+../parameter \
+		+incdir+../sequence \
+		+incdir+../transaction \
+		./CV32E40P_macros.sv \
+		../transaction/riscv_txn_pkg.sv \
+		../memory/riscv_memory_pkg.sv \
+		../parameter/riscv_params.sv \
+		../sequence/riscv_base_seq.sv \
+		../sequence/riscv_random_all_seq.sv \
 
 clean_all:
 	rm -rf $(VCS_RESULTS)
+	rm -rf $(VCS_CMP_LOG)
