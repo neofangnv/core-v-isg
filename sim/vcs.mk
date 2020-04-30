@@ -16,11 +16,12 @@
 # 
 ###############################################################################
 
-VCS                = VCS
+VCS                = vcs
 VCS_HOME          ?=
-VCS_CMP_FLAGS     ?=
-VCS_UVM_ARGS      ?=
-VCS_RESULTS       ?=
+VCS_CMP_LOG       ?= comp.log
+VCS_CMP_FLAGS     ?= -sverilog
+VCS_UVM_ARGS      ?= -ntb_opts uvm
+VCS_RESULTS       ?= csrc simv.daidir simv vc_hdrs.h
 VCS_RUN_FLAGS     ?=
 
 # Variables to control wave dumping from command the line
@@ -56,12 +57,11 @@ help:
 	vcs -help
 
 # VCS compile target
-comp: mk_results
+comp:
 	$(VCS) \
+		-l $(VCS_CMP_LOG) \
 		$(VCS_CMP_FLAGS) \
 		$(VCS_UVM_ARGS) \
-		$(VCS_ACC_FLAGS) \
-		-sv_lib $(UVM_HOME)/src/dpi/libuvm_dpi.so \
 		+incdir+../memory \
 		+incdir+../parameter \
 		+incdir+../sequence \
@@ -72,7 +72,7 @@ comp: mk_results
 		../parameter/riscv_params.sv \
 		../sequence/riscv_base_seq.sv \
 		../sequence/riscv_random_all_seq.sv \
-		+$(UVM_PLUSARGS)
 
 clean_all:
 	rm -rf $(VCS_RESULTS)
+	rm -rf $(VCS_CMP_LOG)
