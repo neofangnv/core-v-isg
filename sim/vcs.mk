@@ -46,9 +46,13 @@ endif
 
 .PHONY: comp
 
+val = 0
+
 no_rule:
 	@echo 'makefile: SIMULATOR is set to $(SIMULATOR), but no rule/target specified.'
 	@echo 'try "make SIMULATOR=vcs comp" (or just "make comp" if shell ENV variable SIMULATOR is already set).'
+	@echo 'THIS MAKEFILE NOT YET IMPLEMENTED.'
+	exit $(val)
 
 all: clean_all comp
 
@@ -56,23 +60,23 @@ help:
 	vcs -help
 
 # VCS compile target
-comp: mk_results
-	$(VCS) \
-		$(VCS_CMP_FLAGS) \
-		$(VCS_UVM_ARGS) \
-		$(VCS_ACC_FLAGS) \
-		-sv_lib $(UVM_HOME)/src/dpi/libuvm_dpi.so \
-		+incdir+../memory \
-		+incdir+../parameter \
-		+incdir+../sequence \
-		+incdir+../transaction \
-		./CV32E40P_macros.sv \
-		../transaction/riscv_txn_pkg.sv \
-		../memory/riscv_memory_pkg.sv \
-		../parameter/riscv_params.sv \
-		../sequence/riscv_base_seq.sv \
-		../sequence/riscv_random_all_seq.sv \
-		+$(UVM_PLUSARGS)
+comp: no_rule
+#	$(VCS) \
+#		$(VCS_CMP_FLAGS) \
+#		$(VCS_UVM_ARGS) \
+#		$(VCS_ACC_FLAGS) \
+#		-sv_lib $(UVM_HOME)/src/dpi/libuvm_dpi.so \
+#		+incdir+../memory \
+#		+incdir+../parameter \
+#		+incdir+../sequence \
+#		+incdir+../transaction \
+#		./CV32E40P_macros.sv \
+#		../transaction/riscv_txn_pkg.sv \
+#		../memory/riscv_memory_pkg.sv \
+#		../parameter/riscv_params.sv \
+#		../sequence/riscv_base_seq.sv \
+#		../sequence/riscv_random_all_seq.sv \
+#		+$(UVM_PLUSARGS)
 
 clean_all:
 	rm -rf $(VCS_RESULTS)
