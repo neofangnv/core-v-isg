@@ -27,3 +27,5 @@ no_rule:
 
 %::
 	@echo '$(SIMULATOR): unknown simulator'
+	@echo 'Usage: make SIMULATOR=<simulator> <target>'
+	@echo 'e.g: make SIMULATOR=vcs comp'

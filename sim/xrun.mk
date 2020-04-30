@@ -16,13 +16,10 @@
 # 
 ###############################################################################
 
-VCS                = vcs
-VCS_HOME          ?=
-VCS_CMP_LOG       ?= comp.log
-VCS_CMP_FLAGS     ?= -sverilog
-VCS_UVM_ARGS      ?= -ntb_opts uvm
-VCS_RESULTS       ?= csrc simv.daidir simv vc_hdrs.h
-VCS_RUN_FLAGS     ?=
+XRUN              = xrun
+XRUN_UVMHOME_ARG ?= CDNS-1.2-ML
+XRUN_CMP_FLAGS   ?= -64bit -disable_sem2009 -access +rwc -q -clean -sv -uvm -uvmhome $(XRUN_UVMHOME_ARG)
+XRUN_DIR         ?= xcelium.d
 
 # Variables to control wave dumping from command the line
 # Humans _always_ forget the "S", so you can have it both ways...
@@ -39,33 +36,28 @@ DUMP_WAVES = 1
 endif
 
 ifneq ($(DUMP_WAVES), 0)
-VCS__ACC_FLAGS ?= +acc
-VCS__DMP_FILE  ?= 
-VCS__DMP_FLAGS ?= -waves $(VCS_DMP_FILE)
+XRUN_ACC_FLAGS ?= +acc
+XRUN_DMP_FILE  ?= 
+XRUN_DMP_FLAGS ?= -waves $(XRUN_DMP_FILE)
 endif
 
 
 .PHONY: comp
 
-val = 0
-
 no_rule:
 	@echo 'makefile: SIMULATOR is set to $(SIMULATOR), but no rule/target specified.'
-	@echo 'try "make SIMULATOR=vcs comp" (or just "make comp" if shell ENV variable SIMULATOR is already set).'
-	@echo 'THIS MAKEFILE NOT YET IMPLEMENTED.'
-	exit $(val)
+	@echo 'try "make SIMULATOR=xrun comp" (or just "make comp" if shell ENV variable SIMULATOR is already set).'
 
 all: clean_all comp
 
 help:
-	vcs -help
+	xrun -help
 
-# VCS compile target
+# XRUN compile target
 comp:
-	$(VCS) \
-		-l $(VCS_CMP_LOG) \
-		$(VCS_CMP_FLAGS) \
-		$(VCS_UVM_ARGS) \
+	$(XRUN) \
+		$(XRUN_CMP_FLAGS) \
+		$(XRUN_ACC_FLAGS) \
 		+incdir+../memory \
 		+incdir+../parameter \
 		+incdir+../sequence \
@@ -76,7 +68,10 @@ comp:
 		../parameter/riscv_params.sv \
 		../sequence/riscv_base_seq.sv \
 		../sequence/riscv_random_all_seq.sv \
+		+$(UVM_PLUSARGS) \
+		-elaborate
 
 clean_all:
-	rm -rf $(VCS_RESULTS)
-	rm -rf $(VCS_CMP_LOG)
+	rm -rf $(XRUN_DIR)
+	rm -f  xrun.history
+	rm -f  xrun.log

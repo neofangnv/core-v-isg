@@ -1,18 +1,18 @@
-/*
- * Copyright (c) 2017, NVIDIA CORPORATION.  All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+//
+// Copyright (c) 2017, NVIDIA CORPORATION.  All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 
 `ifndef RISCV_RANDOM_ALL_SEQ__SV
 `define RISCV_RANDOM_ALL_SEQ__SV
@@ -21,9 +21,10 @@
 // gen_inst() function should be overrided to implement corresponding constraint
 // gen_valid_sequence() is the main function to generate a valid sequence
 class riscv_random_all_seq extends riscv_base_seq;
-	`uvm_object_utils(riscv_random_all_seq);
 
-	riscv_inst_base_txn tr;
+    `uvm_object_utils(riscv_random_all_seq)
+
+    riscv_inst_base_txn tr;
 
     bit enable_csr;
     bit increase_jalr;
@@ -33,7 +34,7 @@ class riscv_random_all_seq extends riscv_base_seq;
     int jalr_weight;
     int ras_weight;
 
-	function new (string name = "riscv_random_all_seq");
+    function new (string name = "riscv_random_all_seq");
         super.new(name);
 
         if (!$value$plusargs("CSR_EN=%d", enable_csr)) begin
@@ -263,4 +264,5 @@ class riscv_random_all_seq extends riscv_base_seq;
 	endtask: body
 endclass: riscv_random_all_seq
 
-`endif // RISCV_RANDOM_ALL_SEQ__SV
+`endif
+
