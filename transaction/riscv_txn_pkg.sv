@@ -17,6 +17,8 @@
 `ifndef RISCV_TXN_PKG__SV
 `define RISCV_TXN_PKG__SV
 
+`include "uvm_macros.svh"
+
 package riscv_txn_pkg;
 	import uvm_pkg::*;
 

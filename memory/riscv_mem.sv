@@ -21,7 +21,7 @@ class riscv_mem extends uvm_component;
   static bit [7:0] dut_mem [*];
   static bit [7:0] rm_mem [*];
 
-  `uvm_component_utils(riscv_mem);
+  `uvm_component_utils(riscv_mem)
 
   function new(string name = "riscv_mem", uvm_component parent);
     super.new(name,parent);

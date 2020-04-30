@@ -557,7 +557,7 @@ class riscv_base_seq extends uvm_sequence #(riscv_inst_base_txn);
     mem_region m_data_region;
 
     // used pmp entry ids
-    bit m_used_pmp_idx [*];
+    bit m_used_pmp_idx [int];  //TODO: use int for assoc array index type (discuss with Neo Fang)
 
   // max allowed same pc times, simulation will exit after reaching this value
   // the value is set according to cmod implementation
@@ -3610,9 +3610,20 @@ function void riscv_base_seq::gen_fpr_queue(int cnt);
   
     void'(std::randomize(rnd) with { rnd dist {1:/5, [2:4]:/40, 5:/10, [6:10]:/5, [11:21]:/5, [22:31]:/30, 32:/5};});
     if(cnt != -1) rnd = cnt;
-  fpr_queue = new[rnd];
+    fpr_queue = new[rnd];
 
-    void'(std::randomize(fpr_queue) with { unique {fpr_queue};});
+     // TODO: Steve Richmond (SiLabs) says: "Xcelium won't take the unique inside
+     //       of a constraint block in a scoped randomize call.  So I just recoded
+     //       as foreach's to get it through".
+     // Discuss with Neo Fang
+     //void'(std::randomize(fpr_queue) with { unique {fpr_queue};});
+     void'(std::randomize(fpr_queue) with {
+       foreach (fpr_queue[i]) {
+         foreach (fpr_queue[j]) {
+           (i != j) -> (fpr_queue[i] != fpr_queue[j]);
+         }
+       }
+     });
   
     for(int i=0; i<rnd; i++)begin
     `uvm_info("debug", $psprintf("fpr_queue[%0d] = %0d", i, fpr_queue[i]), UVM_NONE);
