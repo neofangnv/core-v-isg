@@ -1063,6 +1063,7 @@ virtual task gen_init_gpr();
 endtask
 
 // initialize M-mode direct mode ISR() and put corresponding instruction code into memory
+// NEED_CHANGE, user can decide to use this or create their own
 virtual task init_mmode_isr();
     bit [4:0] tmp_gpr;
     bit [4:0] mcause_gpr;
@@ -1317,6 +1318,7 @@ virtual task init_mmode_isr();
 endtask
 
 // initialize M-mode vectored mode ISR() and put corresponding instruction code into memory
+// NEED_CHANGE, user can decide to use this or create their own
 virtual task init_mmode_vectored_isr();
     bit [4:0] tmp_gpr;
     bit [4:0] mcause_gpr;
@@ -1564,6 +1566,7 @@ virtual task init_mmode_vectored_isr();
 endtask
 
 // initialize S-mode direct mode ISR() and put corresponding instruction code into memory
+// NEED_CHANGE, user can decide to use this or create their own
 virtual task init_smode_isr();
     bit [4:0] tmp_gpr;
     bit [4:0] scause_gpr;
@@ -1745,6 +1748,7 @@ virtual task init_smode_isr();
 endtask
 
 // initialize S-mode vectored mode ISR() and put corresponding instruction code into memory
+// NEED_CHANGE, user can decide to use this or create their own
 virtual task init_smode_vectored_isr();
     bit [4:0] tmp_gpr;
     bit [4:0] scause_gpr;
@@ -1929,6 +1933,7 @@ virtual task init_smode_vectored_isr();
 
 endtask
 
+// NEED_CHANGE, user can decide to use this or create their own
 virtual task init_mmode_isr_nest_expt();
     bit [4:0] tmp_gpr;
     bit [63:0] curr_pc;
@@ -2009,7 +2014,7 @@ virtual task init_mmode_isr_nest_expt();
     store_isr_inst_code_with_pc(OP_MRET, 0, 0, 0, 0, curr_pc);
 endtask
 
-// NEED_CHANGE
+// NEED_CHANGE, allocate memory region based on needs
 // set address range for each memory region
 virtual function void init_mem_region();
     bit [63:0] min_addr;
@@ -2021,17 +2026,17 @@ virtual function void init_mem_region();
     min_addr = init_start_pc;
     max_addr = init_start_pc + 'h2000;
     m_bvec_region.set_va_range(min_addr, max_addr);
-    min_addr = min_addr + 'h1000_0000; //TODO
-    max_addr = max_addr + 'h1000_0000;  //TODO
+    min_addr = min_addr + 'h1000_0000;
+    max_addr = max_addr + 'h1000_0000;
     m_bvec_region.set_pa_range(min_addr, max_addr);
 
     m_code_region = new();
     m_code_region.region_type = TYPE_CODE;
-    min_addr = init_start_pc + 'h2000;
+    min_addr = init_start_pc + 'h2000 + 1;
     max_addr = min_addr + 'h10000;
     m_code_region.set_va_range(min_addr, max_addr);
-    min_addr = min_addr + 'h2000_0000; //TODO
-    max_addr = max_addr + 'h2000_0000; //TODO
+    min_addr = min_addr + 'h2000_0000;
+    max_addr = max_addr + 'h2000_0000;
     m_code_region.set_pa_range(min_addr, max_addr);
 
     m_tvec_region = new();
@@ -2047,8 +2052,8 @@ virtual function void init_mem_region();
     min_addr = m_init_smode_trap_vector;
     max_addr = m_init_smode_trap_vector+'h1000;
     m_tvec_region.set_va_range(min_addr, max_addr);
-    min_addr = min_addr + 'h3000_0000; //TODO
-    max_addr = max_addr + 'h3000_0000; //TODO
+    min_addr = min_addr + 'h3000_0000;
+    max_addr = max_addr + 'h3000_0000;
     m_tvec_region.set_pa_range(min_addr, max_addr);
 
     m_bkdr_data_region = new();
@@ -2056,8 +2061,8 @@ virtual function void init_mem_region();
     min_addr = reserve_mem_start_va;
     max_addr = reserve_mem_start_va+'h1_0000;
     m_bkdr_data_region.set_va_range(min_addr, max_addr);
-    min_addr = min_addr + 'h4000_0000; //TODO
-    max_addr = max_addr + 'h4000_0000; //TODO
+    min_addr = min_addr + 'h4000_0000;
+    max_addr = max_addr + 'h4000_0000;
     m_bkdr_data_region.set_pa_range(min_addr, max_addr);
 
     m_stack_region = new();
@@ -2065,8 +2070,8 @@ virtual function void init_mem_region();
     min_addr = stack_start_va;
     max_addr = stack_start_va+'h1_0000;
     m_stack_region.set_va_range(min_addr, max_addr);
-    min_addr = min_addr + 'h6000_0000; //TODO
-    max_addr = max_addr + 'h6000_0000; //TODO
+    min_addr = min_addr + 'h6000_0000;
+    max_addr = max_addr + 'h6000_0000;
     m_stack_region.set_pa_range(min_addr, max_addr);
 endfunction
 
@@ -2114,10 +2119,10 @@ function riscv_base_seq::new (string name = "riscv_base_seq");
     init_start_pc = `RESET_PC;
   end
   if (!$value$plusargs("RESERVE_MEM_START_VA=%h", reserve_mem_start_va)) begin
-    reserve_mem_start_va = `RISCV_PA_EXTMEM1_START + 'h1_0000_0000; //TODO
+    reserve_mem_start_va = `RISCV_PA_EXTMEM1_START + 'h1_0000_0000; //NEED_CHANGE
   end
   if (!$value$plusargs("STACK_START_VA=%h", stack_start_va)) begin
-    stack_start_va = `RISCV_PA_EXTMEM1_START + 'h2_0000_0000; //TODO
+    stack_start_va = `RISCV_PA_EXTMEM1_START + 'h2_0000_0000; //NEED_CHANGE
   end
   if (!$value$plusargs("GPR_NUM=%d", gpr_num)) begin
     gpr_num = 32;
@@ -2138,10 +2143,10 @@ function riscv_base_seq::new (string name = "riscv_base_seq");
         m_init_priv_level = PRIV_LEVEL_MMODE;
     end
     if (!$value$plusargs("TRAP_VECTOR=%h", m_init_mmode_trap_vector)) begin
-        m_init_mmode_trap_vector = `RISCV_PA_EXTMEM1_START + 'hf_0000_0000;  //TODO
+        m_init_mmode_trap_vector = `RISCV_PA_EXTMEM1_START + 'hf_0000_0000;  //NEED_CHANGE
     end
     if (!$value$plusargs("SMODE_TRAP_VECTOR=%h", m_init_smode_trap_vector)) begin
-        m_init_smode_trap_vector = `RISCV_PA_EXTMEM1_START + 'hff_0000_0000;  //TODO
+        m_init_smode_trap_vector = `RISCV_PA_EXTMEM1_START + 'hff_0000_0000;  //NEED_CHANGE
     end
     if (!$value$plusargs("INTR_EN=%d", interrupt_en)) begin
         interrupt_en = 0;
@@ -2647,7 +2652,7 @@ function bit[63:0] riscv_base_seq::get_csr_wdata(inst_type_e inst_type, bit[4:0]
 endfunction
 
 // check if there is exception for csr instruction
-// NEED_CHANGE
+// NEED_CHANGE, update according to actual supported CSR
 function bit riscv_base_seq::check_csr_exception(inst_type_e inst_type, bit[11:0] csr, bit[4:0] src, bit[4:0] rd);
     bit has_exception = 0;
     bit [63:0] csr_wdata;
@@ -2910,7 +2915,7 @@ function bit riscv_base_seq::check_csr_exception(inst_type_e inst_type, bit[11:0
     return has_exception;
 endfunction
 
-// NEED_CHANGE
+// NEED_CHANGE, update according to actual supported CSR
 function csr_register riscv_base_seq::get_csr_reg(bit[11:0] csr);
     csr_register csr_reg = new();
 
@@ -2992,7 +2997,7 @@ function csr_register riscv_base_seq::get_csr_reg(bit[11:0] csr);
     return csr_reg;
 endfunction
 
-// NEED_CHANGE
+// NEED_CHANGE, update according to actual supported CSR
 function void riscv_base_seq::get_csr_field(bit[11:0] csr, csr_register csr_reg);
     if (csr == `CSR_MEPC) begin
         mepc[63:1] = csr_reg.field_queue[0].field_value;
@@ -4965,7 +4970,7 @@ function bit riscv_base_seq::check_lsu_exception(inst_type_e inst_type, bit[63:0
         pa = va2pa(va, 0);
 
         // check if there is any voilation for pa
-    // NEED CHANGE
+    // NEED_CHANGE
     end
 
     // update cause
@@ -5000,7 +5005,7 @@ function bit riscv_base_seq::check_lsu_exception(inst_type_e inst_type, bit[63:0
 endfunction
 
 // Insert memory bus fault
-// NEED CHANGE
+// NEED_CHANGE
 function void riscv_base_seq::insert_lsu_bus_fault(inst_type_e inst_type, bit[63:0] addr);
     bit [63:0] tcm_tlb_miss_addr;
   bit [63:0] fbif_fault_addr;
@@ -5028,7 +5033,7 @@ function void riscv_base_seq::insert_lsu_bus_fault(inst_type_e inst_type, bit[63
 endfunction
 
 // Insert fetch bus fault
-// NEED CHANGE
+// NEED_CHANGE
 function void riscv_base_seq::insert_fetch_bus_fault(bit[63:0] pc, int code_size);
     bit [63:0] pc_pa[4];
     bit [63:0] check_fault_addr;
@@ -5136,9 +5141,10 @@ function bit riscv_base_seq::check_fetch_fault_exception(bit[63:0] pc, int code_
     end
   end
 
-  if (check_pmp_cross_boundary(pc_pa_queue) == 1) begin
-    return 1;
-  end
+  //NEED_CHANGE, check if this is needed
+  //if (check_pmp_cross_boundary(pc_pa_queue) == 1) begin
+  //  return 1;
+  //end
 
     return has_exception;
 endfunction
@@ -5414,7 +5420,7 @@ task riscv_base_seq::create_op(inst_type_e inst_type, bit[4:0] rd, bit[4:0] rs1,
     bit [ 2:0] rm;
 
   tr = riscv_inst_base_txn::type_id::create("tr",,get_full_name());
-  start_item(tr);
+  //start_item(tr);
     void'(std::randomize(rm) with { rm dist {0:/ 20, [1:4]:/ 80, [5:6]:/ 2, 7:/ 3};});
     if(rs3 == -1)begin void'(std::randomize(rs3) with {rs3 inside {fpr_queue};}); end
   tr.rm        = rm;
@@ -5453,7 +5459,8 @@ task riscv_base_seq::create_op(inst_type_e inst_type, bit[4:0] rd, bit[4:0] rs1,
         m_curr_pc += 2;
     end
     riscv_inst_base_txn::instn +=1;
-    finish_item(tr);
+    //finish_item(tr);
+    store_inst_code(tr);
 endtask
 
 // different task than create_op()
@@ -5464,7 +5471,7 @@ task riscv_base_seq::create_op_with_pc(inst_type_e inst_type, bit[4:0] rd, bit[4
     bit [ 2:0] rm;
 
   tr = riscv_inst_base_txn::type_id::create("tr",,get_full_name());
-  start_item(tr);
+  //start_item(tr);
     void'(std::randomize(rm) with { rm dist {0:/ 20, [1:4]:/ 60, [5:6]:/ 3, 7:/ 20};});
     if(rs3 == -1)begin void'(std::randomize(rs3) with {rs3 inside {fpr_queue};}); end
   tr.rm = rm;
@@ -5486,7 +5493,8 @@ task riscv_base_seq::create_op_with_pc(inst_type_e inst_type, bit[4:0] rd, bit[4
     end
 
   `uvm_info("OP_DUMP3", $psprintf("generated one instruction transaction:\n%s", tr.sprint()), UVM_MEDIUM);
-    finish_item(tr);
+    //finish_item(tr);
+    store_inst_code(tr);
 endtask
 
 task riscv_base_seq::init_random_gpr();
@@ -5533,20 +5541,11 @@ task riscv_base_seq::init_all_reserve_gpr();
         end
     end
 
-    // save tmp_gpr and tmp_gpr_1
-  // NEED_CHANGE, use another CSR to replace mscratch2 (NV extension)
-    create_op(OP_CSRRW, 0, tmp_gpr, 0, (`CSR_MSCRATCH << 5), 1);
-    create_op(OP_CSRRW, 0, tmp_gpr_1, 0, (`CSR_MSCRATCH2 << 5), 1);
-
     create_op_init_reserve_gpr(reserve_gpr, reserve_mem_start_va, tmp_gpr, tmp_gpr_1);
     create_op_init_reserve_gpr(reserve_gpr_boot, init_start_pc, tmp_gpr, tmp_gpr_1);
     create_op_init_reserve_gpr(reserve_gpr_stack, stack_start_va, tmp_gpr, tmp_gpr_1);
     create_op_init_reserve_gpr(reserve_gpr_iaf_step, reserve_gpr_iaf_step_wdata, tmp_gpr, tmp_gpr_1);
     create_op_init_reserve_gpr(reserve_gpr_iaf_offset, 0, tmp_gpr, tmp_gpr_1);
-
-    // restore tmp_gpr and tmp_gpr_1
-    create_op(OP_CSRRW, tmp_gpr, 0, 0, (`CSR_MSCRATCH << 5), 1);
-    create_op(OP_CSRRW, tmp_gpr_1, 0, 0, (`CSR_MSCRATCH2 << 5), 1);
 endtask
 
 
@@ -6143,12 +6142,12 @@ task riscv_base_seq::test_init();
     end
 
     // Optional configure pmp region
-  if (random_pmp_cfg == 0) begin
-        init_pmp_cfg();
-    end
-    else begin
-        init_random_pmp_cfg();
-    end
+  //if (random_pmp_cfg == 0) begin
+  //      init_pmp_cfg();
+  //  end
+  //  else begin
+  //      init_random_pmp_cfg();
+  //  end
 
   mtvec_mode = (($urandom%2)==0) ? 1 : 0;
   stvec_mode = (($urandom%2)==0) ? 1 : 0;
@@ -6160,9 +6159,9 @@ task riscv_base_seq::test_init();
     // initialize reserve gpr if anyone is used
   init_all_reserve_gpr();
 
-    config_pmp_region();
-    config_mcounteren();
-    config_mstatus();
+    //config_pmp_region();
+    //config_mcounteren();
+    //config_mstatus();
     config_trap_vector();
 
     gen_init_gpr();
@@ -6190,9 +6189,9 @@ task riscv_base_seq::test_init();
         init_mmode_isr_nest_expt();
     end
 
-    config_mtimecmp();
-    config_delegation();
-    config_interrupt_en();
+    //config_mtimecmp();
+    //config_delegation();
+    //config_interrupt_en();
     config_riscv_mode();
 
     // Indicate the end of boot code
@@ -6870,12 +6869,10 @@ function bit riscv_base_seq::gen_valid_sequence(int inst_num, ref bit[63:0] last
             pc_arr[curr_pc] = 1;
         end
 
-        `uvm_info("debug", $psprintf("in gen_valid_sequence curr_pc = 0x%0x", curr_pc), UVM_DEBUG);
-
-        if (!m_boot_pc.exists(curr_pc)) begin
+        //if (!m_boot_pc.exists(curr_pc)) begin
             `uvm_info("debug", $psprintf("in gen_valid_sequence(), pc = 0x%0x, pc_pa = 0x%0x, inst_type = 0x%0x, next_pc = 0x%0x, rd = %0d, rs1 = %0d, rs2 = %0d, imm = 0x%0x, m_gpr[rs1] = 0x%0x, m_gpr[rd] = 0x%0x, is_change_store_inst = %0d, inst_code = 0x%0x, cause = %0d, pc_num = %0d", curr_pc, curr_pc_pa[63:0], inst_arr[curr_pc].inst_type, next_pc, inst_arr[curr_pc].rd, inst_arr[curr_pc].rs1, inst_arr[curr_pc].rs2, inst_arr[curr_pc].imm, m_gpr[inst_arr[curr_pc].rs1], m_gpr[inst_arr[curr_pc].rd], inst_arr[curr_pc].is_change_store_inst, inst_code, cause, pc_arr.num()), UVM_DEBUG);
       //print_gpr();
-        end
+        //end
 
         // record backward branch times
         if (!inst_arr.exists(next_pc)) begin
@@ -7304,13 +7301,13 @@ endfunction
 // convert VA to PA
 // NEED_CHANGE
 function bit[63:0] riscv_base_seq::va2pa(bit[63:0] va, bit is_fetch);
-  return 0;
+  return va;
 endfunction
 
 // convert PA to VA
 // NEED_CHANGE
 function bit[63:0] riscv_base_seq::pa2va(bit[63:0] pa, bit is_fetch);
-  return 0;
+  return pa;
 endfunction
 
 // check if there is memory translation violation or pa access violation per access (multiple byte)
@@ -7330,9 +7327,10 @@ function bit riscv_base_seq::check_mem_trans_access_violation(bit[63:0] va, int 
         end
   end
 
-  if (check_pmp_cross_boundary(pa_queue) == 1) begin
-    return 1;
-  end
+	// NEED_CHANGE, check if this is needed
+  //if (check_pmp_cross_boundary(pa_queue) == 1) begin
+  //  return 1;
+  //end
 
   return 0;
 endfunction
@@ -7348,9 +7346,10 @@ function bit riscv_base_seq::check_mem_trans_access_violation_per_byte(bit[63:0]
     // check pa access violation here
 
     // check PMP violation
-    if (check_pmp_violation(pa, is_fetch, is_load, 1) == 1) begin
-        return 1;
-    end
+	// NEED_CHANGE, check if this is needed
+    //if (check_pmp_violation(pa, is_fetch, is_load, 1) == 1) begin
+    //    return 1;
+    //end
 
     return 0;
 endfunction

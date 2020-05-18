@@ -21,8 +21,15 @@ VCS_HOME          ?=
 VCS_CMP_LOG       ?= comp.log
 VCS_CMP_FLAGS     ?= -sverilog
 VCS_UVM_ARGS      ?= -ntb_opts uvm
-VCS_RESULTS       ?= csrc simv.daidir simv vc_hdrs.h
-VCS_RUN_FLAGS     ?=
+VCS_RESULTS       ?= csrc simv.daidir vc_hdrs.h
+VCS_TARGET        ?= simv
+VCS_RUN_FLAGS     ?= +UVM_MAX_QUIT_COUNT=50
+VCS_RUN_LOG       ?= run.log
+TEST_NAME         ?= riscv_random_all_test
+SEED              ?= 0
+UVM_VERBOSITY     ?= UVM_LOW
+GEN_INST_NUM      ?= 1000
+RUN_ARGS          ?=
 
 # Variables to control wave dumping from command the line
 # Humans _always_ forget the "S", so you can have it both ways...
@@ -64,19 +71,35 @@ help:
 comp:
 	$(VCS) \
 		-l $(VCS_CMP_LOG) \
+		-o $(VCS_TARGET) \
 		$(VCS_CMP_FLAGS) \
 		$(VCS_UVM_ARGS) \
 		+incdir+../memory \
 		+incdir+../parameter \
 		+incdir+../sequence \
 		+incdir+../transaction \
+		+incdir+../test \
 		./CV32E40P_macros.sv \
 		../transaction/riscv_txn_pkg.sv \
 		../memory/riscv_memory_pkg.sv \
 		../parameter/riscv_params.sv \
 		../sequence/riscv_base_seq.sv \
 		../sequence/riscv_random_all_seq.sv \
+		../test/riscv_test_base.sv \
+		../test/riscv_random_all_test.sv \
+		../test/riscv_gen_top.sv \
 
 clean_all:
 	rm -rf $(VCS_RESULTS)
+	rm -rf $(VCS_TARGET)
 	rm -rf $(VCS_CMP_LOG)
+
+run:
+	$(VCS_TARGET) \
+		-l $(VCS_RUN_LOG) \
+		+UVM_TESTNAME=$(TEST_NAME) \
+		+ntb_random_seed=$(SEED) \
+		+UVM_VERBOSITY=$(UVM_VERBOSITY) \
+		+MAXLEN=$(GEN_INST_NUM) +MINLEN=$(GEN_INST_NUM) \
+		$(RUN_ARGS) \
+		$(VCS_RUN_FLAGS) \

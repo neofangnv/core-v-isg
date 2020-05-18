@@ -22,7 +22,7 @@
 `define END_LOOP_PC_TIMES   16
 
 // default constraint branch range
-`define DEFAULT_BR_RANGE    200
+`define DEFAULT_BR_RANGE    0
 
 // NEED_CHANGE
 `define RISCV_PA_EXTMEM1_START	'h6000_0000_0000_0000

@@ -93,6 +93,7 @@ class riscv_mem extends uvm_component;
         string str;
         int fh;
         bit [7:0] data;
+		int code;
 
         fh = $fopen(filename, "r");
         if (fh == 0) begin
@@ -101,12 +102,12 @@ class riscv_mem extends uvm_component;
 
         addr = 0;
         while (!$feof(fh)) begin
-            $fgets(str, fh);
+            code = $fgets(str, fh);
             if (str[0] == "@") begin
-                $sscanf(str, "@%x", addr);
+                code = $sscanf(str, "@%x", addr);
             end
             else begin
-                $sscanf(str, "%x", data);
+                code = $sscanf(str, "%x", data);
                 tmp_mem[addr] = data;
                 addr++;
             end
